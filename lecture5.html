@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лекция 5 | Управляющие конструкции и функции в JavaScript</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                #0a0f1a 0%, 
+                #0f1623 15%, 
+                #1a1f35 30%, 
+                #0d1b2a 45%, 
+                #1b263b 60%, 
+                #0f1623 80%, 
+                #0a0f1a 100%);
+            background-size: 300% 300%;
+            animation: gradientShift 12s ease infinite;
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 40%, rgba(32,178,170,0.12) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 60%, rgba(155,89,182,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, rgba(46,204,113,0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+            animation: subtlePulse 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 50% 100%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 50% 0%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes subtlePulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(32,178,170,0.4);
+            border-radius: 50%;
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-20vh) translateX(50px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            padding: 30px 20px;
+        }
+
+        .lecture-header {
+            background: rgba(25, 30, 45, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 40px;
+            margin-bottom: 35px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.08);
+            animation: fadeInDown 0.8s ease-out;
+            transition: all 0.3s;
+        }
+
+        .lecture-header:hover {
+            border-color: rgba(32,178,170,0.3);
+            box-shadow: 0 0 30px rgba(32,178,170,0.1);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .lecture-header h1 {
+            font-size: 2.8em;
+            background: linear-gradient(135deg, #ffffff, #20b2aa, #9b59b6);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 15px;
+            animation: textGradient 4s ease infinite;
+        }
+
+        @keyframes textGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .lecture-header .lecture-number {
+            color: #20b2aa;
+            font-size: 14px;
+            letter-spacing: 4px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: rgba(32,178,170,0.15);
+            border: 1px solid rgba(32,178,170,0.4);
+            border-radius: 40px;
+            padding: 12px 30px;
+            color: #20b2aa;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(32,178,170,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .back-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .back-btn:hover {
+            background: #20b2aa;
+            color: white;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(32,178,170,0.3);
+            border-color: transparent;
+        }
+
+        .back-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .content {
+            background: rgba(25, 30, 45, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 50px;
+            border: 1px solid rgba(255,255,255,0.06);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            transition: all 0.3s;
+            color: #ffffff;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content:hover {
+            border-color: rgba(32,178,170,0.15);
+        }
+
+        .content h2 {
+            color: #20b2aa;
+            margin: 35px 0 20px 0;
+            font-size: 1.9em;
+            border-left: 4px solid #20b2aa;
+            padding-left: 18px;
+            transition: transform 0.3s;
+        }
+
+        .content h2:hover {
+            transform: translateX(5px);
+        }
+
+        .content h3 {
+            color: #9b59b6;
+            margin: 25px 0 12px 0;
+            font-size: 1.5em;
+        }
+
+        .content h4 {
+            color: #f39c12;
+            margin: 20px 0 10px 0;
+            font-size: 1.2em;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            text-align: justify;
+            line-height: 1.7;
+            color: #ffffff;
+        }
+
+        .content ul, .content ol {
+            margin: 15px 0 15px 30px;
+            color: #ffffff;
+        }
+
+        .content li {
+            margin-bottom: 10px;
+            transition: transform 0.2s;
+            color: #ffffff;
+        }
+
+        .content li:hover {
+            transform: translateX(5px);
+            color: #20b2aa;
+        }
+
+        .code-block {
+            background: rgba(10, 14, 25, 0.85);
+            border-left: 4px solid #20b2aa;
+            padding: 20px;
+            border-radius: 14px;
+            margin: 20px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            line-height: 1.6;
+            transition: all 0.3s;
+            position: relative;
+            color: #ffffff;
+        }
+
+        .code-block:hover {
+            transform: scale(1.01);
+            border-left-color: #48c9b0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .code-block code {
+            color: #48c9b0;
+        }
+
+        .note {
+            background: rgba(32,178,170,0.12);
+            border-left: 4px solid #20b2aa;
+            padding: 20px;
+            border-radius: 14px;
+            margin: 25px 0;
+            transition: all 0.3s;
+            color: #ffffff;
+        }
+
+        .note:hover {
+            background: rgba(32,178,170,0.18);
+            transform: translateX(5px);
+        }
+
+        .warning-note {
+            background: rgba(243,156,18,0.12);
+            border-left: 4px solid #f39c12;
+            padding: 20px;
+            border-radius: 14px;
+            margin: 25px 0;
+            transition: all 0.3s;
+            color: #ffffff;
+        }
+
+        .warning-note:hover {
+            background: rgba(243,156,18,0.18);
+            transform: translateX(5px);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .info-card {
+            background: rgba(255,255,255,0.04);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            cursor: pointer;
+            color: #ffffff;
+        }
+
+        .info-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(32,178,170,0.3);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .info-card:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .info-card h4 {
+            color: #20b2aa;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .info-card p {
+            font-size: 14px;
+            margin-bottom: 0;
+            color: #ffffff;
+        }
+
+        .info-card code {
+            color: #48c9b0;
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(10, 14, 25, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+            color: #ffffff !important;
+        }
+        th { 
+            background: rgba(32,178,170,0.25);
+            color: #ffffff !important;
+            font-weight: 600;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 20, 35, 0.8);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #20b2aa;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #48c9b0;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px 15px; }
+            .lecture-header { padding: 25px; }
+            .lecture-header h1 { font-size: 1.8em; }
+            .content { padding: 25px; }
+            .content h2 { font-size: 1.5em; }
+            .info-grid { grid-template-columns: 1fr; }
+            th, td { padding: 8px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="lecture-header">
+            <div class="lecture-number">Лекция №5</div>
+            <h1>🔄 Управляющие конструкции и функции в JavaScript</h1>
+            <a href="index.html" class="back-btn">← На главную</a>
+        </div>
+        
+        <div class="content">
+            <h2>📋 План лекции</h2>
+            <ul>
+                <li>Условные операторы: if, else if, else, тернарный оператор, switch</li>
+                <li>Циклы: for, while, do...while, for...of, for...in</li>
+                <li>Массивы: создание, доступ к элементам, основные методы (push, pop, shift, unshift, length, forEach, map, filter, reduce)</li>
+                <li>Функции: объявление, параметры, возврат значения, стрелочные функции, функции как объекты первого класса</li>
+                <li>Объекты: создание, свойства, методы, доступ к свойствам, деструктуризация</li>
+            </ul>
+
+            <h2>1. Условные операторы</h2>
+            <p>Условные операторы позволяют программе принимать решения в зависимости от различных условий.</p>
+
+            <h3>1.1. Конструкция if / else if / else</h3>
+            <p>Самая распространённая форма условного оператора. Выполняет блок кода, если условие истинно.</p>
+            <div class="code-block">
+<code>
+let age = 18;
+
+if (age >= 18) {
+    console.log("Доступ разрешён");
+} else if (age > 16) {
+    console.log("Требуется согласие родителей");
+} else {
+    console.log("Доступ запрещён");
+}
+</code>
+            </div>
+
+            <h3>1.2. Тернарный оператор</h3>
+            <p>Компактная форма условного оператора: <code>условие ? выражение1 : выражение2</code>. Удобен для коротких присваиваний.</p>
+            <div class="code-block">
+<code>
+let age = 18;
+let status = (age >= 18) ? "взрослый" : "ребёнок";
+console.log(status); // "взрослый"
+
+// Вложенный тернарный оператор (используйте с осторожностью)
+let result = (score > 90) ? "Отлично" : (score > 70) ? "Хорошо" : "Нужно учиться";
+</code>
+            </div>
+
+            <h3>1.3. Оператор switch</h3>
+            <p>Используется для множественного выбора, когда нужно сравнить одну переменную с несколькими значениями.</p>
+            <div class="code-block">
+<code>
+let day = 3;
+let dayName;
+
+switch (day) {
+    case 1:
+        dayName = "Понедельник";
+        break;
+    case 2:
+        dayName = "Вторник";
+        break;
+    case 3:
+        dayName = "Среда";
+        break;
+    case 4:
+        dayName = "Четверг";
+        break;
+    case 5:
+        dayName = "Пятница";
+        break;
+    case 6:
+        dayName = "Суббота";
+        break;
+    case 7:
+        dayName = "Воскресенье";
+        break;
+    default:
+        dayName = "Неверный день";
+}
+
+console.log(dayName); // "Среда"
+</code>
+            </div>
+
+            <div class="note">
+                <strong>💡 Совет:</strong> Используйте switch, когда нужно проверить много конкретных значений одной переменной. Если условия сложные (сравнения, логические операторы) — используйте if/else.
+            </div>
+
+            <h2>2. Циклы</h2>
+            <p>Циклы нужны для многократного повторения одного и того же блока кода.</p>
+
+            <h3>Сравнение типов циклов</h3>
+            <table>
+                <thead>
+                    <tr><th>Тип цикла</th><th>Синтаксис</th><th>Когда использовать</th><th>Особенности</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>for</strong></td><td><code>for (инициализация; условие; шаг)</code></td><td>Когда известно точное количество повторений</div></div></div>?, Самый универсальный и часто используемый</div></div></div>?</td></tr>
+                    <tr><td><strong>while</strong></td><td><code>while (условие)</code></td><td>Когда количество повторений заранее неизвестно</div></div></div>?, Проверяет условие ДО выполнения тела</div></div></div>?</td></tr>
+                    <tr><td><strong>do...while</strong></td><td><code>do { тело } while (условие)</code></td><td>Когда тело должно выполниться хотя бы один раз</div></div></div>?, Проверяет условие ПОСЛЕ выполнения тела</div></div></div>?</td></tr>
+                    <tr><td><strong>for...of</strong></td><td><code>for (let item of array)</code></td><td>Для перебора элементов массива или итерируемых объектов</div></div></div>?, Удобен для работы со значениями массива</div></div></div>?</td></tr>
+                    <tr><td><strong>for...in</strong></td><td><code>for (let key in object)</code></td><td>Для перебора свойств объекта</div></div></div>?, Возвращает ключи (индексы), а не значения</div></div></div>?</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+<code>
+// Классический for
+for (let i = 0; i < 5; i++) {
+    console.log("Итерация " + i);
+}
+
+// while
+let count = 0;
+while (count < 3) {
+    console.log("Счёт: " + count);
+    count++;
+}
+
+// do...while (выполнится хотя бы один раз)
+let num = 0;
+do {
+    console.log(num);
+    num++;
+} while (num < 0);
+
+// for...of (для массивов)
+let colors = ['red', 'green', 'blue'];
+for (let color of colors) {
+    console.log(color); // red, green, blue
+}
+
+// for...in (для объектов)
+let user = { name: 'Иван', age: 25, city: 'Москва' };
+for (let key in user) {
+    console.log(key + ': ' + user[key]);
+}
+</code>
+            </div>
+
+            <div class="warning-note">
+                <strong>⚠️ Внимание:</strong> Не используйте for...in для массивов (если порядок важен) — он перебирает свойства в произвольном порядке. Используйте for...of или классический for.
+            </div>
+
+            <h2>3. Массивы</h2>
+            <p>Массивы — упорядоченные коллекции данных, которые позволяют хранить множество значений в одной переменной.</p>
+
+            <h3>Создание массивов</h3>
+            <div class="code-block">
+<code>
+// Литеральный синтаксис (рекомендуемый)
+let fruits = ["яблоко", "банан", "апельсин"];
+
+// Через конструктор Array (менее предпочтительный)
+let numbers = new Array(1, 2, 3, 4, 5);
+
+// Создание массива с заданной длиной
+let emptyArray = new Array(10); // массив из 10 пустых элементов
+</code>
+            </div>
+
+            <h3>Доступ к элементам</h3>
+            <p>Доступ к элементам осуществляется по индексу (нумерация начинается с 0).</p>
+            <div class="code-block">
+<code>
+let fruits = ["яблоко", "банан", "апельсин"];
+console.log(fruits[0]);     // "яблоко"
+console.log(fruits[1]);     // "банан"
+console.log(fruits[2]);     // "апельсин"
+console.log(fruits.length); // 3 (длина массива)
+
+// Изменение элемента
+fruits[1] = "груша";
+console.log(fruits); // ["яблоко", "груша", "апельсин"]
+</code>
+            </div>
+
+            <h3>Основные методы массивов</h3>
+            <table>
+                <thead>
+                    <tr><th>Метод</th><th>Описание</th><th>Пример</th><th>Изменяет исходный массив</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>push(элемент)</code></div></div></div>?, Добавляет элемент в конец</div></div></div>?, <code>arr.push(4)</code></div></div></div>?, ✅ Да</div></div></div>?</td></tr>
+                    <tr><td><code>pop()</code></div></div></div>?, Удаляет последний элемент и возвращает его</div></div></div>?, <code>let last = arr.pop()</code></div></div></div>?, ✅ Да</div></div></div>?</td></tr>
+                    <tr><td><code>unshift(элемент)</code></div></div></div>?, Добавляет элемент в начало</div></div></div>?, <code>arr.unshift(0)</code></div></div></div>?, ✅ Да</div></div></div>?</td></tr>
+                    <tr><td><code>shift()</code></div></div></div>?, Удаляет первый элемент и возвращает его</div></div></div>?, <code>let first = arr.shift()</code></div></div></div>?, ✅ Да</div></div></div>?</td></tr>
+                    <tr><td><code>forEach()</code></div></div></div>?, Выполняет функцию для каждого элемента</div></div></div>?, <code>arr.forEach(item => console.log(item))</code></div></div></div>?, ❌ Нет</div></div></div>?</td></tr>
+                    <tr><td><code>map()</code></div></div></div>?, Создаёт новый массив с результатами функции</div></div></div>?, <code>let doubled = arr.map(x => x * 2)</code></div></div></div>?, ❌ Нет</div></div></div>?</td></tr>
+                    <tr><td><code>filter()</code></div></div></div>?, Создаёт новый массив с элементами, прошедшими проверку</div></div></div>?, <code>let evens = arr.filter(x => x % 2 === 0)</code></div></div></div>?, ❌ Нет</div></div></div>?</td></tr>
+                    <tr><td><code>reduce()</code></div></div></div>?, Сворачивает массив к одному значению</div></div></div>?, <code>let sum = arr.reduce((acc, x) => acc + x, 0)</code></div></div></div>?, ❌ Нет</div></div></div>?</td></tr>
+                    <tr><td><code>find()</code></div></div></div>?, Возвращает первый элемент, удовлетворяющий условию</div></div></div>?, <code>let found = arr.find(x => x > 5)</code></div></div></div>?, ❌ Нет</div></div></div>?</td></tr>
+                    <tr><td><code>includes()</code></div></div></div>?, Проверяет, содержит ли массив элемент</div></div></div>?, <code>arr.includes(3)</code></div></div></div>?, ❌ Нет</div></div></div>?</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+<code>
+let arr = [1, 2, 3];
+
+// Добавление и удаление
+arr.push(4);        // [1, 2, 3, 4]
+let last = arr.pop(); // last = 4, arr = [1, 2, 3]
+
+// Перебор элементов (forEach)
+fruits.forEach(fruit => console.log(fruit));
+
+// Создание нового массива (map)
+let doubled = arr.map(x => x * 2); // [2, 4, 6]
+
+// Фильтрация (filter)
+let evens = arr.filter(x => x % 2 === 0); // [2]
+
+// Суммирование (reduce)
+let sum = arr.reduce((acc, x) => acc + x, 0); // 6
+</code>
+            </div>
+
+            <h2>4. Функции</h2>
+            <p>Функции позволяют группировать код в логические блоки, которые можно вызывать по имени многократно.</p>
+
+            <h3>4.1. Классическое объявление функции (Function Declaration)</h3>
+            <div class="code-block">
+<code>
+function sum(a, b) {
+    return a + b;
+}
+
+let result = sum(5, 3); // 8
+console.log(result);
+</code>
+            </div>
+
+            <h3>4.2. Функциональное выражение (Function Expression)</h3>
+            <div class="code-block">
+<code>
+const multiply = function(a, b) {
+    return a * b;
+};
+
+let product = multiply(4, 5); // 20
+</code>
+            </div>
+
+            <h3>4.3. Стрелочные функции (Arrow Functions) — современный синтаксис</h3>
+            <div class="code-block">
+<code>
+// Однострочная стрелочная функция (неявный return)
+const multiply = (a, b) => a * b;
+
+// Стрелочная функция с одним параметром (скобки можно опустить)
+const square = x => x * x;
+
+// Стрелочная функция с несколькими операторами (явный return)
+const divide = (a, b) => {
+    if (b === 0) return "Ошибка: деление на ноль";
+    return a / b;
+};
+</code>
+            </div>
+
+            <div class="note">
+                <strong>📌 Различия между способами объявления функций:</strong><br>
+                • <strong>Function Declaration</strong> — можно вызвать до объявления (поднятие).<br>
+                • <strong>Function Expression</strong> — нельзя вызвать до объявления.<br>
+                • <strong>Стрелочные функции</strong> — короче, не имеют собственного <code>this</code>, не могут быть конструкторами.
+            </div>
+
+            <h3>4.4. Параметры по умолчанию</h3>
+            <div class="code-block">
+<code>
+function greet(name = "Гость") {
+    console.log(`Привет, ${name}!`);
+}
+
+greet();          // "Привет, Гость!"
+greet("Анна");    // "Привет, Анна!"
+</code>
+            </div>
+
+            <h3>4.5. Rest-параметры (...)</h3>
+            <div class="code-block">
+<code>
+function sumAll(...numbers) {
+    return numbers.reduce((acc, num) => acc + num, 0);
+}
+
+console.log(sumAll(1, 2, 3, 4, 5)); // 15
+</code>
+            </div>
+
+            <h2>5. Объекты</h2>
+            <p>Объекты — это фундаментальная структура данных в JavaScript, которая позволяет группировать связанные значения (свойства) и действия (методы) в одной сущности.</p>
+
+            <h3>5.1. Создание объектов</h3>
+            <div class="code-block">
+<code>
+// Литеральная запись (рекомендуемый способ)
+let person = {
+    name: "Анна",
+    age: 25,
+    city: "Москва",
+    greet: function() {
+        console.log(`Привет, я ${this.name}`);
+    }
+};
+
+// Сокращённая запись метода
+let person2 = {
+    name: "Иван",
+    greet() {
+        console.log(`Привет, я ${this.name}`);
+    }
+};
+</code>
+            </div>
+
+            <h3>5.2. Доступ к свойствам</h3>
+            <div class="code-block">
+<code>
+let user = { name: "Иван", age: 30 };
+
+// Через точку (dot notation)
+console.log(user.name); // "Иван"
+
+// Через квадратные скобки (bracket notation)
+console.log(user["age"]); // 30
+
+// Добавление нового свойства
+user.city = "Москва";
+
+// Удаление свойства
+delete user.age;
+</code>
+            </div>
+
+            <h3>5.3. Деструктуризация объектов</h3>
+            <div class="code-block">
+<code>
+let person = { name: "Анна", age: 25, city: "Москва" };
+
+// Извлечение свойств в переменные
+let { name, age } = person;
+console.log(name); // "Анна"
+console.log(age);  // 25
+
+// Переименование при деструктуризации
+let { name: userName, age: userAge } = person;
+console.log(userName); // "Анна"
+
+// Значения по умолчанию
+let { name, country = "Россия" } = person;
+console.log(country); // "Россия"
+</code>
+            </div>
+
+            <h3>5.4. Оператор расширения (spread) для объектов</h3>
+            <div class="code-block">
+<code>
+let person = { name: "Анна", age: 25 };
+let extendedPerson = { ...person, city: "Москва" };
+console.log(extendedPerson); // { name: "Анна", age: 25, city: "Москва" }
+</code>
+            </div>
+
+            <h3>Таблица 1. Основные конструкции JavaScript</h3>
+            <table>
+                <thead>
+                    <tr><th>Тема</th><th>Ключевые конструкции / Методы</th><th>Синтаксис (пример)</th><th>Для чего нужно</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Условные операторы</div></div></div>?, if / else / else if</div></div></div>?, <code>if (x > 0) { ... } else { ... }</code></div></div></div>?, Выполняет разный код в зависимости от условия</div></div></div>?</td></tr>
+                    <tr><td style="text-align:center;">-</td><td>Тернарный оператор (? :)</div></div></div>?, <code>let res = (x > 0) ? "Да" : "Нет";</code></div></div></div>?, Короткая запись выбора из двух значений</div></div></div>?</td></tr>
+                    <tr><td>Циклы</div></div></div>?, for</div></div></div>?, <code>for (let i = 0; i < 5; i++) { ... }</code></div></div></div>?, Когда известно количество повторений</div></div></div>?</td></tr>
+                    <tr><td style="text-align:center;">-</td><td>while</div></div></div>?, <code>while (условие) { ... }</code></div></div></div>?, Когда количество повторений заранее неизвестно</div></div></div>?</td></tr>
+                    <tr><td style="text-align:center;">-</td><td>do...while</div></div></div>?, <code>do { ... } while (условие);</code></div></div></div>?, Тело обязательно выполнится хотя бы раз</div></div></div>?</td></tr>
+                    <tr><td style="text-align:center;">-</td><td>for...of / for...in</div></div></div>?, <code>for (let item of array) {...}</code></div></div></div>?, Перебор элементов массива / свойств объекта</div></div></div>?</td></tr>
+                    <tr><td>Массивы</div></div></div>?, push() / pop()</div></div></div>?, <code>arr.push(4); let last = arr.pop();</code></div></div></div>?, Добавление / удаление в конец массива</div></div></div>?</td></tr>
+                    <tr><td style="text-align:center;">-</div></div></div>?, unshift() / shift()</div></div></div>?, <code>arr.unshift(0); let first = arr.shift();</code></div></div></div>?, Добавление / удаление в начало массива</div></div></div>?</td></tr>
+                    <tr><td style="text-align:center;">-</div></div></div>?, forEach / map / filter</div></div></div>?, <code>arr.map(x => x * 2)</code></div></div></div>?, Перебор, преобразование и фильтрация массивов</div></div></div>?</td></tr>
+                    <tr><td>Функции</div></div></div>?, Классическая</div></div></div>?, <code>function sum(a, b) { return a + b; }</code></div></div></div>?, Переиспользуемый блок кода с возвратом значения</div></div></div>?</td></tr>
+                    <tr><td style="text-align:center;">-</div></div></div>?, Стрелочная</div></div></div>?, <code>const mul = (a, b) => a * b;</code></div></div></div>?, Краткая запись функции (особенно для колбэков)</div></div></div>?</td></tr>
+                    <tr><td>Объекты</div></div></div>?, Создание и свойства</div></div></div>?, <code>let user = { name: "Иван", age: 30 };</code></div></div></div>?, Группировка данных по принципу «ключ — значение»</div></div></div>?</td></tr>
+                    <tr><td style="text-align:center;">-</div></div></div>?, Деструктуризация</div></div></div>?, <code>let { name, age } = user;</code></div></div></div>?, Быстрое извлечение свойств объекта в переменные</div></div></div>?</td></tr>
+                    <tr><td style="text-align:center;">-</div></div></div>?, Spread-оператор (…)</div></div></div>?, <code>let newObj = { ...obj, key: value }</code></div></div></div>?, Копирование и расширение объектов</div></div></div>?</td></tr>
+                </tbody>
+            </table>
+
+            <div class="note">
+                <strong>📝 Итог лекции:</strong><br>
+                • Условные операторы (if/else, switch, тернарный) управляют потоком выполнения программы.<br>
+                • Циклы (for, while, do...while, for...of, for...in) позволяют многократно выполнять один и тот же код.<br>
+                • Массивы — упорядоченные коллекции данных с мощными методами (push, pop, map, filter, reduce).<br>
+                • Функции — переиспользуемые блоки кода (Function Declaration, Function Expression, стрелочные функции).<br>
+                • Объекты — структуры для хранения данных в формате «ключ-значение» с возможностью деструктуризации.
+            </div>
+
+            <h2>📝 Вопросы для самопроверки</h2>
+            <ol>
+                <li>В чём разница между оператором <code>if/else</code> и <code>switch</code>? Когда что лучше использовать?</li>
+                <li>Что выведет код: <code>for (var i = 0; i < 3; i++) { setTimeout(() => console.log(i), 0); }</code>? Почему?</li>
+                <li>В чём разница между циклами <code>for...of</code> и <code>for...in</code>?</li>
+                <li>Какой метод массива используется для преобразования каждого элемента и создания нового массива?</li>
+                <li>Чем отличается <code>map()</code> от <code>forEach()</code>?</li>
+                <li>В чём разница между Function Declaration и Function Expression?</li>
+                <li>Что такое стрелочные функции и чем они отличаются от обычных?</li>
+                <li>Как создать метод внутри объекта и обратиться к его свойствам?</li>
+                <li>Что такое деструктуризация объекта? Приведите пример.</li>
+                <li>Как скопировать объект с добавлением нового свойства?</li>
+            </ol>
+        </div>
+        
+        <div class="footer">
+            <p>Курс лекций по дисциплине «Обучение пользователей информационных систем» | Веб-разработка на HTML, CSS и JavaScript</p>
+            <p style="margin-top: 8px;">Лекция 5: Управляющие конструкции и функции в JavaScript</p>
+        </div>
+    </div>
+
+    <script>
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            if (!particlesContainer) return;
+            
+            const particleCount = 60;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 6 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                const duration = Math.random() * 12 + 8;
+                particle.style.animationDuration = duration + 's';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                const colors = ['rgba(32,178,170,0.4)', 'rgba(72,201,176,0.3)', 'rgba(46,204,113,0.3)', 'rgba(93,173,226,0.3)'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.content h2, .content h3, .info-card, .code-block, .note, .warning-note, table').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+        
+        createParticles();
+        
+        document.querySelectorAll('.info-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    card.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>

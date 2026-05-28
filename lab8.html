@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SportBags | Premium мужские спортивные сумки</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <i class="fas fa-briefcase"></i>
+                    <span>SPORT<span class="highlight">BAGS</span></span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#home" class="nav-link active">Главная</a></li>
+                    <li><a href="#products" class="nav-link">Ассортимент</a></li>
+                    <li><a href="#reviews" class="nav-link">Отзывы</a></li>
+                    <li><a href="#location" class="nav-link">Расположение</a></li>
+                </ul>
+                <div class="cart-icon-wrapper">
+                    <div class="cart-icon" id="cartIcon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </div>
+                </div>
+                <div class="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Корзина боковая панель -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-cart"></i> Корзина</h3>
+            <button class="close-cart" id="closeCart"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="empty-cart">
+                <i class="fas fa-shopping-bag"></i>
+                <p>Корзина пуста</p>
+                <span>Добавьте товары из каталога</span>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Итого:</span>
+                <span id="cartTotal">0 ₽</span>
+            </div>
+            <div class="cart-buttons">
+                <button class="clear-cart-btn" id="clearCartBtn"><i class="fas fa-trash-alt"></i> Очистить</button>
+                <button class="checkout-btn">Оформить заказ</button>
+            </div>
+        </div>
+    </div>
+    <div class="cart-overlay" id="cartOverlay"></div>
+
+    <main>
+        <!-- Главная секция -->
+        <section id="home" class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-badge">🔥 Лучшие сумки 2025</div>
+                    <h1>Спортивные сумки <br><span class="gradient-text">для настоящих мужчин</span></h1>
+                    <p>Прочные, стильные и вместительные сумки для спорта, тренировок и путешествий. <br>Высокое качество по доступным ценам.</p>
+                    <div class="hero-buttons">
+                        <a href="#products" class="btn-primary"><i class="fas fa-store"></i> В каталог</a>
+                        <a href="#reviews" class="btn-outline"><i class="fas fa-comments"></i> Отзывы</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <span class="stat-number">5000+</span>
+                            <span class="stat-label">Довольных клиентов</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">50+</span>
+                            <span class="stat-label">Моделей сумок</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Гарантия качества</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="floating-card">
+                        <i class="fas fa-truck-fast"></i>
+                        <span>Бесплатная доставка</span>
+                    </div>
+                    <div class="floating-card card2">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Гарантия 2 года</span>
+                    </div>
+                    <div class="floating-card card3">
+                        <i class="fas fa-undo-alt"></i>
+                        <span>Возврат 30 дней</span>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=500&fit=crop" alt="Спортивная сумка" class="hero-img">
+                </div>
+            </div>
+        </section>
+
+        <!-- Преимущества -->
+        <section class="features">
+            <div class="container">
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <h3>Быстрая доставка</h3>
+                        <p>Доставка по всей России за 2-5 дней</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-lock"></i>
+                        <h3>Надежная защита</h3>
+                        <p>Защита покупателя и безопасная оплата</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-gem"></i>
+                        <h3>Премиум качество</h3>
+                        <p>Только сертифицированные материалы</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-headset"></i>
+                        <h3>Поддержка 24/7</h3>
+                        <p>Круглосуточная поддержка клиентов</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ассортимент товаров -->
+        <section id="products" class="products">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Наши <span class="gradient-text">сумки</span></h2>
+                    <p>Выберите идеальную сумку для ваших тренировок</p>
+                </div>
+                <div class="products-grid" id="productsGrid"></div>
+            </div>
+        </section>
+
+        <!-- Отзывы -->
+        <section id="reviews" class="reviews">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Отзывы <span class="gradient-text">клиентов</span></h2>
+                    <p>Что говорят о нас покупатели</p>
+                </div>
+                <div class="reviews-slider" id="reviewsContainer"></div>
+                <div class="add-review">
+                    <h3>Оставить отзыв</h3>
+                    <form id="reviewForm">
+                        <input type="text" id="reviewName" placeholder="Ваше имя" required>
+                        <textarea id="reviewText" placeholder="Ваш отзыв..." rows="3" required></textarea>
+                        <div class="rating">
+                            <span>Оценка: </span>
+                            <i class="far fa-star" data-rating="1"></i>
+                            <i class="far fa-star" data-rating="2"></i>
+                            <i class="far fa-star" data-rating="3"></i>
+                            <i class="far fa-star" data-rating="4"></i>
+                            <i class="far fa-star" data-rating="5"></i>
+                        </div>
+                        <button type="submit" class="btn-primary">Отправить отзыв</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Наше расположение -->
+        <section id="location" class="location">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Наше <span class="gradient-text">расположение</span></h2>
+                    <p>Приходите в наш шоурум или заказывайте онлайн</p>
+                </div>
+                <div class="location-content">
+                    <div class="location-info">
+                        <div class="info-card">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <h3>Адрес</h3>
+                            <p>г. Москва, ул. Тверская, 25</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-phone-alt"></i>
+                            <h3>Телефон</h3>
+                            <p>+7 (495) 123-45-67</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-envelope"></i>
+                            <h3>Email</h3>
+                            <p>info@sportbags.ru</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-clock"></i>
+                            <h3>Режим работы</h3>
+                            <p>Пн-Вс: 10:00 - 21:00</p>
+                        </div>
+                    </div>
+                    <div class="map-container">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2244.305678268204!2d37.610317!3d55.757269!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46b54a0b6b7b8c3f%3A0x7b8a0b8a2c6a5b8!2z0JzQvtGB0LrQstCwLCDQoNC-0YHRgdC40Y8!5e0!3m2!1sru!2s!4v1700000000000!5m2!1sru!2s" 
+                            width="100%" 
+                            height="100%" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-briefcase"></i>
+                    <span>SPORT<span class="highlight">BAGS</span></span>
+                    <p>Качественные спортивные сумки для активных мужчин</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Меню</h4>
+                    <ul>
+                        <li><a href="#home">Главная</a></li>
+                        <li><a href="#products">Ассортимент</a></li>
+                        <li><a href="#reviews">Отзывы</a></li>
+                        <li><a href="#location">Расположение</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h4>Мы в соцсетях</h4>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-vk"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-subscribe">
+                    <h4>Подписка</h4>
+                    <p>Получайте новости о скидках первыми</p>
+                    <form class="subscribe-form">
+                        <input type="email" placeholder="Ваш email">
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SportBags. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

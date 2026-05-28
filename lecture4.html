@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лекция 4 | Основы JavaScript: переменные, типы данных и синтаксис</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                #0a0f1a 0%, 
+                #0f1623 15%, 
+                #1a1f35 30%, 
+                #0d1b2a 45%, 
+                #1b263b 60%, 
+                #0f1623 80%, 
+                #0a0f1a 100%);
+            background-size: 300% 300%;
+            animation: gradientShift 12s ease infinite;
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 40%, rgba(32,178,170,0.12) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 60%, rgba(155,89,182,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, rgba(46,204,113,0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+            animation: subtlePulse 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 50% 100%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 50% 0%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes subtlePulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(32,178,170,0.4);
+            border-radius: 50%;
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-20vh) translateX(50px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            padding: 30px 20px;
+        }
+
+        .lecture-header {
+            background: rgba(25, 30, 45, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 40px;
+            margin-bottom: 35px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.08);
+            animation: fadeInDown 0.8s ease-out;
+            transition: all 0.3s;
+        }
+
+        .lecture-header:hover {
+            border-color: rgba(32,178,170,0.3);
+            box-shadow: 0 0 30px rgba(32,178,170,0.1);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .lecture-header h1 {
+            font-size: 2.8em;
+            background: linear-gradient(135deg, #ffffff, #20b2aa, #9b59b6);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 15px;
+            animation: textGradient 4s ease infinite;
+        }
+
+        @keyframes textGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .lecture-header .lecture-number {
+            color: #20b2aa;
+            font-size: 14px;
+            letter-spacing: 4px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: rgba(32,178,170,0.15);
+            border: 1px solid rgba(32,178,170,0.4);
+            border-radius: 40px;
+            padding: 12px 30px;
+            color: #20b2aa;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(32,178,170,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .back-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .back-btn:hover {
+            background: #20b2aa;
+            color: white;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(32,178,170,0.3);
+            border-color: transparent;
+        }
+
+        .back-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .content {
+            background: rgba(25, 30, 45, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 50px;
+            border: 1px solid rgba(255,255,255,0.06);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            transition: all 0.3s;
+            color: #ffffff;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content:hover {
+            border-color: rgba(32,178,170,0.15);
+        }
+
+        .content h2 {
+            color: #20b2aa;
+            margin: 35px 0 20px 0;
+            font-size: 1.9em;
+            border-left: 4px solid #20b2aa;
+            padding-left: 18px;
+            transition: transform 0.3s;
+        }
+
+        .content h2:hover {
+            transform: translateX(5px);
+        }
+
+        .content h3 {
+            color: #9b59b6;
+            margin: 25px 0 12px 0;
+            font-size: 1.5em;
+        }
+
+        .content h4 {
+            color: #f39c12;
+            margin: 20px 0 10px 0;
+            font-size: 1.2em;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            text-align: justify;
+            line-height: 1.7;
+            color: #ffffff;
+        }
+
+        .content ul, .content ol {
+            margin: 15px 0 15px 30px;
+            color: #ffffff;
+        }
+
+        .content li {
+            margin-bottom: 10px;
+            transition: transform 0.2s;
+            color: #ffffff;
+        }
+
+        .content li:hover {
+            transform: translateX(5px);
+            color: #20b2aa;
+        }
+
+        .code-block {
+            background: rgba(10, 14, 25, 0.85);
+            border-left: 4px solid #20b2aa;
+            padding: 20px;
+            border-radius: 14px;
+            margin: 20px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            line-height: 1.6;
+            transition: all 0.3s;
+            position: relative;
+            color: #ffffff;
+        }
+
+        .code-block:hover {
+            transform: scale(1.01);
+            border-left-color: #48c9b0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .code-block code {
+            color: #48c9b0;
+        }
+
+        .note {
+            background: rgba(32,178,170,0.12);
+            border-left: 4px solid #20b2aa;
+            padding: 20px;
+            border-radius: 14px;
+            margin: 25px 0;
+            transition: all 0.3s;
+            color: #ffffff;
+        }
+
+        .note:hover {
+            background: rgba(32,178,170,0.18);
+            transform: translateX(5px);
+        }
+
+        .warning-note {
+            background: rgba(243,156,18,0.12);
+            border-left: 4px solid #f39c12;
+            padding: 20px;
+            border-radius: 14px;
+            margin: 25px 0;
+            transition: all 0.3s;
+            color: #ffffff;
+        }
+
+        .warning-note:hover {
+            background: rgba(243,156,18,0.18);
+            transform: translateX(5px);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .info-card {
+            background: rgba(255,255,255,0.04);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            cursor: pointer;
+            color: #ffffff;
+        }
+
+        .info-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(32,178,170,0.3);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .info-card:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .info-card h4 {
+            color: #20b2aa;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .info-card p {
+            font-size: 14px;
+            margin-bottom: 0;
+            color: #ffffff;
+        }
+
+        .info-card code {
+            color: #48c9b0;
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(10, 14, 25, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+            color: #ffffff !important;
+        }
+        th { 
+            background: rgba(32,178,170,0.25);
+            color: #ffffff !important;
+            font-weight: 600;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 20, 35, 0.8);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #20b2aa;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #48c9b0;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px 15px; }
+            .lecture-header { padding: 25px; }
+            .lecture-header h1 { font-size: 1.8em; }
+            .content { padding: 25px; }
+            .content h2 { font-size: 1.5em; }
+            .info-grid { grid-template-columns: 1fr; }
+            th, td { padding: 8px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="lecture-header">
+            <div class="lecture-number">Лекция №4</div>
+            <h1>⚡ Основы JavaScript: переменные, типы данных и синтаксис</h1>
+            <a href="index.html" class="back-btn">← На главную</a>
+        </div>
+        
+        <div class="content">
+            <h2>📋 План лекции</h2>
+            <ul>
+                <li>Что такое JavaScript и где он выполняется</li>
+                <li>История создания JavaScript</li>
+                <li>Подключение скриптов: внутри HTML и внешний файл</li>
+                <li>Переменные: var, let, const (различия и области видимости)</li>
+                <li>Типы данных: числа, строки, булевы значения, null, undefined, Symbol, BigInt</li>
+                <li>Преобразование типов (явное и неявное)</li>
+                <li>Базовые операторы: арифметические, сравнения, логические, присваивания</li>
+                <li>Взаимодействие с пользователем: alert, prompt, confirm</li>
+                <li>Отладка кода: console.log и инструменты разработчика</li>
+            </ul>
+
+            <h2>1. Что такое JavaScript?</h2>
+            <p><strong>JavaScript</strong> — это язык программирования, который изначально создавался для добавления интерактивности на веб-страницы. В отличие от HTML и CSS, которые описывают структуру и внешний вид, JavaScript оживляет страницу: обрабатывает клики, анимирует элементы, проверяет формы, загружает данные без перезагрузки (технология AJAX).</p>
+            <p>Каждый современный браузер (Chrome, Firefox, Safari, Edge) имеет встроенный движок, который читает и исполняет код JavaScript на стороне клиента (компьютере пользователя). Это делает страницы отзывчивыми и интерактивными без постоянных обращений к серверу.</p>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>✨ Что можно делать с JavaScript?</h4>
+                    <p>• Обрабатывать клики, наведение мыши, нажатия клавиш<br>• Анимировать элементы, создавать слайдеры и модальные окна<br>• Проверять формы на корректность заполнения<br>• Отправлять запросы на сервер без перезагрузки страницы (AJAX/Fetch)<br>• Сохранять данные в localStorage пользователя<br>• Создавать полноценные веб-приложения и игры</p>
+                </div>
+                <div class="info-card">
+                    <h4>📜 История создания</h4>
+                    <p>JavaScript был создан в <strong>1995 году</strong> Брэнданом Эйхом, работающим в компании Netscape. Изначально он назывался Mocha, затем LiveScript, и только потом получил имя JavaScript. Несмотря на схожесть названия, JavaScript не имеет прямого отношения к языку Java. За 10 дней Брэндан Эйх создал прототип языка, который стал основой современного веба.</p>
+                </div>
+            </div>
+
+            <div class="note">
+                <strong>📌 Важно понимать:</strong> JavaScript — это не Java. Это совершенно разные языки с разным синтаксисом и назначением. Название было выбрано из маркетинговых соображений.
+            </div>
+
+            <h2>2. Подключение скриптов</h2>
+            <p>Чтобы браузер нашёл и выполнил JavaScript, код нужно правильно подключить к HTML-странице.</p>
+
+            <h3>Способы подключения</h3>
+            <table>
+                <thead>
+                    <tr><th>Способ</th><th>Синтаксис</th><th>Когда использовать</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Внутри HTML (тег &lt;script&gt;)</strong></td><td><code>&lt;script&gt; // код &lt;/script&gt;</code></td><td>Для небольших скриптов на одной странице</td></tr>
+                    <tr><td><strong>Внешний файл</strong></td><td><code>&lt;script src="script.js"&gt;&lt;/script&gt;</code></td><td>Рекомендуемый способ для многостраничных сайтов</td></tr>
+                    <tr><td><strong>Инлайн-обработчики</strong></td><td><code>&lt;button onclick="alert('Click')"&gt;</code></td><td>Не рекомендуется (смешивает HTML и JS)</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+<code>
+&lt;!-- Встроенный скрипт --&gt;
+&lt;script&gt;
+    console.log('Hello from inline script');
+&lt;/script&gt;
+
+&lt;!-- Внешний скрипт (рекомендуемый способ) --&gt;
+&lt;script src="js/main.js"&gt;&lt;/script&gt;
+
+&lt;!-- Скрипт с отложенной загрузкой (defer) --&gt;
+&lt;script src="js/main.js" defer&gt;&lt;/script&gt;
+
+&lt;!-- Асинхронная загрузка (async) --&gt;
+&lt;script src="js/widget.js" async&gt;&lt;/script&gt;
+</code>
+            </div>
+
+            <div class="note">
+                <strong>💡 Рекомендации по размещению:</strong><br>
+                • Размещайте тег &lt;script&gt; перед закрывающим тегом &lt;/body&gt;, чтобы сначала загрузилась структура страницы.<br>
+                • Используйте атрибут <code>defer</code> для скриптов, которые должны выполниться после загрузки HTML.<br>
+                • Используйте <code>async</code> для независимых скриптов (например, счётчики, реклама).<br>
+                • Выносите весь JavaScript во внешние файлы — это улучшает поддерживаемость и кэширование.
+            </div>
+
+            <h2>3. Переменные: var, let, const</h2>
+            <p>Переменные служат для хранения данных и дают им имена, по которым к этим данным можно обратиться. В современном JavaScript используются три ключевых слова для объявления переменных.</p>
+
+            <h3>Сравнение способов объявления переменных</h3>
+            <table>
+                <thead>
+                    <tr><th>Ключевое слово</th><th>Область видимости</th><th>Можно переопределить</th><th>Можно объявить без значения</th><th>Поднятие (hoisting)</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>let</code></td><td>Блочная { }</td><td>✅ Да</td><td>✅ Да</td><td>Да, но без инициализации</td></tr>
+                    <tr><td><code>const</code></td><td>Блочная { }</td><td>❌ Нет</td><td>❌ Нет (обязательно присвоить)</td><td>Да, но без инициализации</td></tr>
+                    <tr><td><code>var</code></td><td>Функциональная</td><td>✅ Да</td><td>✅ Да</td><td>✅ Да (с undefined)</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+<code>
+// let — переменная может изменяться
+let age = 25;
+age = 26;      // ✅ работает
+age = 27;      // ✅ работает
+
+// const — константа (значение нельзя изменить)
+const PI = 3.14159;
+// PI = 3.14;  // ❌ Ошибка! Нельзя изменить константу
+
+// const с объектами — можно менять свойства, но нельзя переназначить сам объект
+const user = { name: 'Иван' };
+user.name = 'Пётр';  // ✅ работает
+// user = {};        // ❌ Ошибка!
+
+// var — устаревший способ (избегайте его в новом коде)
+var oldStyle = 'устаревший';
+</code>
+            </div>
+
+            <div class="warning-note">
+                <strong>⚠️ Рекомендация:</strong> Всегда используйте <code>const</code> по умолчанию. Если понимаете, что значение переменной будет меняться — используйте <code>let</code>. От <code>var</code> лучше отказаться полностью.
+            </div>
+
+            <h2>4. Типы данных в JavaScript</h2>
+            <p>JavaScript — это язык с динамической, слабой типизацией. Это означает, что переменная может хранить значения разных типов, и тип определяется автоматически в момент присваивания.</p>
+
+            <h3>Примитивные типы данных</h3>
+            <table>
+                <thead>
+                    <tr><th>Тип</th><th>Описание</th><th>Пример</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>number</code></td><td>Целые и дробные числа, а также Infinity, -Infinity, NaN (Not a Number)</td><td><code>42, 3.14, -5, Infinity, NaN</code></td></tr>
+                    <tr><td><code>string</code></td><td>Строки текста (в кавычках)</td><td><code>"Привет", 'Мир', `Шаблон ${variable}`</code></td></tr>
+                    <tr><td><code>boolean</code></td><td>Логический тип: истина или ложь</td><td><code>true, false</code></td></tr>
+                    <tr><td><code>null</code></td><td>«Ничего», пустое значение (намеренно присвоенное)</td><td><code>let empty = null;</code></td></tr>
+                    <tr><td><code>undefined</code></td><td>Значение не присвоено (переменная объявлена, но не инициализирована)</td><td><code>let notDefined; // undefined</code></td></tr>
+                    <tr><td><code>symbol</code></td><td>Уникальные и неизменяемые идентификаторы (ES6+)</td><td><code>Symbol('id')</code></td></tr>
+                    <tr><td><code>bigint</code></td><td>Целые числа произвольной длины (ES2020+)</td><td><code>9007199254740991n</code></td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+<code>
+// Примеры разных типов данных
+let numberType = 42;                    // number
+let stringType = "Привет, мир!";        // string
+let booleanType = true;                 // boolean
+let nullType = null;                    // null
+let undefinedType;                      // undefined
+
+// Проверка типа с помощью typeof
+console.log(typeof numberType);         // "number"
+console.log(typeof stringType);         // "string"
+console.log(typeof booleanType);        // "boolean"
+console.log(typeof nullType);           // "object" (историческая ошибка JS)
+console.log(typeof undefinedType);      // "undefined"
+
+// NaN (Not a Number)
+let notANumber = "текст" / 2;           // NaN
+console.log(isNaN(notANumber));         // true
+
+// Infinity
+let infinity = 1 / 0;                   // Infinity
+console.log(infinity);                  // Infinity
+</code>
+            </div>
+
+            <h2>5. Преобразование типов</h2>
+            <p>В JavaScript часто возникает необходимость преобразовать один тип данных в другой.</p>
+
+            <h3>Явное преобразование</h3>
+            <table>
+                <thead>
+                    <tr><th>Функция</th><th>Описание</th><th>Пример</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>Number()</code></td><td>Преобразует в число</td><td><code>Number("123") → 123, Number("abc") → NaN</code></td></tr>
+                    <tr><td><code>String()</code></td><td>Преобразует в строку</td><td><code>String(123) → "123"</code></td></tr>
+                    <tr><td><code>Boolean()</code></td><td>Преобразует в булевый тип</td><td><code>Boolean(1) → true, Boolean(0) → false</code></td></tr>
+                    <tr><td><code>parseInt()</code></td><td>Преобразует в целое число</td><td><code>parseInt("123.45") → 123</code></td></tr>
+                    <tr><td><code>parseFloat()</code></td><td>Преобразует в число с плавающей точкой</td><td><code>parseFloat("123.45") → 123.45</code></td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+<code>
+// Явное преобразование
+let num = Number("42");         // 42 (число)
+let str = String(123);          // "123" (строка)
+let bool = Boolean(1);          // true
+
+// Парсинг чисел из строк
+let int = parseInt("123.45");   // 123 (целое)
+let float = parseFloat("123.45"); // 123.45 (дробное)
+
+// Неявное преобразование (JavaScript делает это автоматически)
+let result1 = "5" + 3;          // "53" (число преобразовалось в строку)
+let result2 = "5" - 3;          // 2 (строка преобразовалась в число)
+let result3 = "5" * "2";        // 10 (обе строки стали числами)
+</code>
+            </div>
+
+            <div class="warning-note">
+                <strong>⚠️ Ложные значения (falsy values):</strong> В JavaScript следующие значения преобразуются в false: <code>false, 0, -0, 0n, "", null, undefined, NaN</code>. Все остальные значения — истинные.
+            </div>
+
+            <h2>6. Базовые операторы</h2>
+            
+            <h3>Арифметические операторы</h3>
+            <table>
+                <thead>
+                    <tr><th>Оператор</th><th>Название</th><th>Пример</th><th>Результат</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>+</code></td><td>Сложение / Конкатенация</td><td><code>5 + 3</code></td><td>8</td></tr>
+                    <tr><td><code>-</code></td><td>Вычитание</td><td><code>5 - 3</code></td><td>2</td></tr>
+                    <tr><td><code>*</code></td><td>Умножение</td><td><code>5 * 3</code></td><td>15</td></tr>
+                    <tr><td><code>/</code></td><td>Деление</td><td><code>6 / 3</code></td><td>2</td></tr>
+                    <tr><td><code>%</code></td><td>Остаток от деления</td><td><code>5 % 2</code></td><td>1</td></tr>
+                    <tr><td><code>**</code></td><td>Возведение в степень</td><td><code>2 ** 3</code></td><td>8</td></tr>
+                    <tr><td><code>++</code></td><td>Инкремент (+1)</td><td><code>let x=5; x++</code></td><td>6</td></tr>
+                    <tr><td><code>--</code></td><td>Декремент (-1)</td><td><code>let x=5; x--</code></td><td>4</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Операторы сравнения</h3>
+            <table>
+                <thead>
+                    <tr><th>Оператор</th><th>Название</th><th>Пример</th><th>Результат</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>></code></td><td>Больше</td><td><code>5 > 3</code></td><td>true</td></tr>
+                    <tr><td><code><</code></td><td>Меньше</td><td><code>5 < 3</code></td><td>false</td></tr>
+                    <tr><td><code>>=</code></td><td>Больше или равно</td><td><code>5 >= 5</code></td><td>true</td></tr>
+                    <tr><td><code><=</code></td><td>Меньше или равно</td><td><code>3 <= 5</code></td><td>true</td></tr>
+                    <tr><td><code>==</code></td><td>Равенство (с приведением типов)</td><td><code>5 == "5"</code></td><td>true</td></tr>
+                    <tr><td><code>===</code></td><td>Строгое равенство (без приведения)</td><td><code>5 === "5"</code></td><td>false</td></tr>
+                    <tr><td><code>!=</code></td><td>Неравенство (с приведением)</td><td><code>5 != "5"</code></td><td>false</td></tr>
+                    <tr><td><code>!==</code></td><td>Строгое неравенство</td><td><code>5 !== "5"</code></td><td>true</td></tr>
+                </tbody>
+            </table>
+
+            <div class="note">
+                <strong>🔐 Правило безопасности:</strong> Всегда используйте строгие операторы <code>===</code> и <code>!==</code>. Они избегают неожиданных совпадений, например: <code>0 == false</code> → true, но <code>0 === false</code> → false.
+            </div>
+
+            <h3>Логические операторы</h3>
+            <div class="code-block">
+<code>
+// && (И) — true только если все операнды истинны
+console.log(true && true);   // true
+console.log(true && false);  // false
+console.log(false && false); // false
+
+// || (ИЛИ) — true если хотя бы один операнд истинен
+console.log(true || false);  // true
+console.log(false || false); // false
+
+// ! (НЕ) — инвертирует значение
+console.log(!true);          // false
+console.log(!false);         // true
+
+// Оператор ?? (нулевого слияния) — возвращает правый операнд, если левый null или undefined
+let value = null ?? 'default';     // 'default'
+let value2 = 0 ?? 'default';       // 0 (0 не null/undefined)
+</code>
+            </div>
+
+            <h2>7. Взаимодействие с пользователем</h2>
+            <p>Для простого диалога с посетителем страницы существуют три встроенные функции, которые блокируют выполнение кода до тех пор, пока пользователь не ответит.</p>
+
+            <h3>Сравнение диалоговых окон</h3>
+            <table>
+                <thead>
+                    <tr><th>Функция</th><th>Назначение</th><th>Возвращаемое значение</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>alert()</code></td><td>Показать сообщение с кнопкой OK</td><td>undefined</td></tr>
+                    <tr><td><code>prompt()</code></td><td>Запросить ввод текста</td><td>строка или null (если отмена)</td></tr>
+                    <tr><td><code>confirm()</code></td><th class="row">Запросить подтверждение (OK/Отмена)</th></td><td style="color:#48c9b0;">true (OK) или false (Отмена)</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+<code>
+// alert — простое уведомление
+alert("Добро пожаловать на сайт!");
+
+// prompt — запрос ввода данных
+let userName = prompt("Как вас зовут?", "Гость");
+if (userName) {
+    alert(`Привет, ${userName}!`);
+}
+
+// confirm — подтверждение действия
+let isDelete = confirm("Вы действительно хотите удалить этот файл?");
+if (isDelete) {
+    alert("Файл удалён");
+} else {
+    alert("Действие отменено");
+}
+</code>
+            </div>
+
+            <div class="warning-note">
+                <strong>⚠️ Ограничения:</strong> alert, prompt и confirm блокируют выполнение кода и взаимодействие со страницей до закрытия окна. В реальных проектах их обычно заменяют кастомными модальными окнами.
+            </div>
+
+            <h2>8. Отладка кода: console и инструменты разработчика</h2>
+            <p>Для отладки JavaScript кода существуют мощные инструменты разработчика в браузере.</p>
+
+            <div class="code-block">
+<code>
+// Вывод информации в консоль
+console.log("Обычное сообщение");
+console.warn("Предупреждение");
+console.error("Ошибка");
+console.info("Информационное сообщение");
+
+// Группировка сообщений
+console.group("Группа сообщений");
+console.log("Сообщение 1");
+console.log("Сообщение 2");
+console.groupEnd();
+
+// Таблица в консоли
+console.table([{ name: "Иван", age: 25 }, { name: "Мария", age: 30 }]);
+
+// Замер времени выполнения
+console.time("myTimer");
+// ... какой-то код
+console.timeEnd("myTimer");
+</code>
+            </div>
+
+            <div class="note">
+                <strong>🔧 Полезные клавиши для отладки:</strong><br>
+                • <code>F12</code> или <code>Ctrl+Shift+I</code> (Win) / <code>Cmd+Option+I</code> (Mac) — открыть инструменты разработчика<br>
+                • <code>Ctrl+Shift+J</code> (Win) / <code>Cmd+Option+J</code> (Mac) — открыть консоль напрямую<br>
+                • Вкладка «Sources» — для установки точек останова (breakpoints) и пошагового выполнения кода
+            </div>
+
+            <h2>📝 Итог лекции</h2>
+            <div class="note">
+                <strong>Основные выводы:</strong><br>
+                • JavaScript — язык программирования для создания интерактивных веб-страниц.<br>
+                • Скрипты подключаются через тег &lt;script&gt; (лучше внешние файлы с defer).<br>
+                • Переменные объявляются через <code>let</code> (изменяемые) и <code>const</code> (неизменяемые). <code>var</code> устарел.<br>
+                • Основные типы данных: number, string, boolean, null, undefined, symbol, bigint.<br>
+                • JavaScript автоматически преобразует типы, но лучше использовать явное преобразование.<br>
+                • Используйте строгие операторы сравнения (<code>===</code>, <code>!==</code>) во избежание ошибок.<br>
+                • Для взаимодействия с пользователем есть alert, prompt, confirm.<br>
+                • Консоль разработчика (console.log) — важнейший инструмент для отладки.
+            </div>
+
+            <h2>📝 Вопросы для самопроверки</h2>
+            <ol>
+                <li>Где выполняется JavaScript код?</li>
+                <li>В чём разница между <code>let</code>, <code>const</code> и <code>var</code>? Какой способ предпочтительнее?</li>
+                <li>Что выведет <code>typeof null</code> и почему?</li>
+                <li>В чём разница между <code>==</code> и <code>===</code>?</li>
+                <li>Что такое <code>NaN</code> и как его проверить?</li>
+                <li>Какие значения в JavaScript являются «ложными» (falsy)?</li>
+                <li>Чем отличается <code>null</code> от <code>undefined</code>?</li>
+                <li>Что делает оператор <code>??</code> (нулевого слияния)?</li>
+                <li>Как открыть консоль разработчика в браузере?</li>
+                <li>Какой способ подключения скриптов рекомендуется для реальных проектов и почему?</li>
+            </ol>
+        </div>
+        
+        <div class="footer">
+            <p>Курс лекций по дисциплине «Обучение пользователей информационных систем» | Веб-разработка на HTML, CSS и JavaScript</p>
+            <p style="margin-top: 8px;">Лекция 4: Основы JavaScript: переменные, типы данных и синтаксис</p>
+        </div>
+    </div>
+
+    <script>
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            if (!particlesContainer) return;
+            
+            const particleCount = 60;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 6 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                const duration = Math.random() * 12 + 8;
+                particle.style.animationDuration = duration + 's';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                const colors = ['rgba(32,178,170,0.4)', 'rgba(72,201,176,0.3)', 'rgba(46,204,113,0.3)', 'rgba(93,173,226,0.3)'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.content h2, .content h3, .info-card, .code-block, .note, .warning-note, table').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+        
+        createParticles();
+        
+        document.querySelectorAll('.info-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    card.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>

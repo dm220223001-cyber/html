@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexus | История премиального бренда</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Inter', system-ui, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                #0a0f1a 0%, 
+                #0f1623 15%, 
+                #1a1f35 30%, 
+                #0d1b2a 45%, 
+                #1b263b 60%, 
+                #0f1623 80%, 
+                #0a0f1a 100%);
+            background-size: 300% 300%;
+            animation: gradientShift 12s ease infinite;
+            z-index: -2;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 50% 100%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 50% 0%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 40%, rgba(32,178,170,0.12) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 60%, rgba(155,89,182,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, rgba(46,204,113,0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+            animation: subtlePulse 8s ease infinite;
+        }
+
+        @keyframes subtlePulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(32,178,170,0.4);
+            border-radius: 50%;
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-20vh) translateX(50px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            padding: 40px 20px;
+        }
+
+        /* Навигация по лабораторным работам — ВЕРХНЯЯ панель */
+        .labs-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 30px;
+            background: rgba(15, 20, 35, 0.5);
+            padding: 15px 20px;
+            border-radius: 60px;
+            backdrop-filter: blur(10px);
+        }
+
+        .lab-link {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 1px solid rgba(32,178,170,0.3);
+        }
+
+        .lab-link:hover {
+            background: #20b2aa;
+            color: #0a0f1a;
+            transform: translateY(-2px);
+        }
+
+        .back-to-main {
+            background: #2a9d8f;
+            margin-left: auto;
+        }
+
+        .back-to-main:hover {
+            background: #1b6e62;
+            color: white;
+        }
+
+        /* Шапка (hero) */
+        .hero-section {
+            background: rgba(25, 30, 45, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 40px;
+            margin-bottom: 35px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.08);
+            animation: fadeInDown 0.8s ease-out;
+            transition: all 0.3s;
+        }
+
+        .hero-section:hover {
+            border-color: rgba(32,178,170,0.3);
+            box-shadow: 0 0 30px rgba(32,178,170,0.1);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-section h1 {
+            font-size: 3.5em;
+            background: linear-gradient(135deg, #ffffff, #20b2aa, #9b59b6);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 15px;
+            animation: textGradient 4s ease infinite;
+        }
+
+        @keyframes textGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero-section p {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1em;
+        }
+
+        /* Навигация внутри страницы — ПОСЛЕ ЗАГОЛОВКА */
+        .page-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 35px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(32,178,170,0.3);
+        }
+
+        .nav-btn:hover {
+            background: #20b2aa;
+            color: #0a0f1a;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(32,178,170,0.4);
+            border-color: transparent;
+        }
+
+        /* Секции */
+        section {
+            background: rgba(20, 25, 40, 0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 35px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        section:hover {
+            border-color: rgba(32,178,170,0.5);
+            box-shadow: 0 10px 30px rgba(32,178,170,0.15);
+            transform: translateY(-3px);
+        }
+
+        h2 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #20b2aa, #9b59b6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(32,178,170,0.5);
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #48c9b0;
+            margin: 25px 0 15px;
+        }
+
+        p {
+            color: #ffffff;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Инлайновый стиль */
+        .inline-red {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        /* Элементы с классами */
+        .highlight {
+            background: rgba(32,178,170,0.15);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #ffffff;
+        }
+
+        .big-text {
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        /* Список моделей */
+        .model-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .model-list li {
+            padding: 10px 0 10px 30px;
+            position: relative;
+            transition: transform 0.2s;
+            color: #ffffff;
+        }
+
+        .model-list li:hover {
+            transform: translateX(5px);
+            color: #20b2aa;
+        }
+
+        .model-list li::before {
+            content: "🏎️";
+            position: absolute;
+            left: 0;
+        }
+
+        /* Цитаты */
+        blockquote {
+            background: rgba(32,178,170,0.08);
+            border-left: 4px solid #20b2aa;
+            padding: 20px;
+            border-radius: 16px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #ffffff;
+        }
+
+        q {
+            background: rgba(32,178,170,0.15);
+            padding: 3px 10px;
+            border-radius: 16px;
+            color: #ffffff;
+        }
+
+        /* Aside */
+        aside {
+            background: rgba(32,178,170,0.08);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #20b2aa;
+        }
+
+        aside p {
+            color: #ffffff;
+        }
+
+        /* Таблица */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 25px 0;
+            border-radius: 20px;
+            border: 1px solid rgba(32,178,170,0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(15, 20, 35, 0.8);
+        }
+
+        th {
+            background: rgba(32,178,170,0.25);
+            color: #ffffff;
+            padding: 15px;
+            font-weight: 700;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            color: #ffffff;
+        }
+
+        tr:hover td {
+            background: rgba(32,178,170,0.1);
+        }
+
+        caption {
+            text-align: left;
+            margin-bottom: 10px;
+            color: #20b2aa;
+        }
+
+        /* Список определений */
+        dl {
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        dt {
+            color: #20b2aa;
+            font-weight: 700;
+            margin-top: 15px;
+        }
+
+        dd {
+            margin-left: 25px;
+            margin-bottom: 12px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        dt:first-of-type {
+            margin-top: 0;
+        }
+
+        /* Галерея */
+        .image-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .car-image {
+            width: 280px;
+            border-radius: 20px;
+            border: 1px solid rgba(32,178,170,0.3);
+            transition: all 0.3s;
+        }
+
+        .car-image:hover {
+            transform: scale(1.03);
+            border-color: #20b2aa;
+            box-shadow: 0 0 20px rgba(32,178,170,0.3);
+        }
+
+        /* Ссылки */
+        .link-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 25px 0;
+            padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+        }
+
+        .link-group a {
+            background: rgba(32,178,170,0.15);
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            color: #20b2aa;
+            transition: all 0.3s;
+        }
+
+        .link-group a:hover {
+            background: #20b2aa;
+            color: #0a0f1a;
+            transform: translateY(-2px);
+        }
+
+        /* Демонстрация каскада */
+        .cascade-demo {
+            background: #20b2aa;
+            color: white;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #special-section .cascade-demo {
+            background: #9b59b6;
+            box-shadow: 0 0 15px rgba(155,89,182,0.5);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 15, 25, 0.8);
+            backdrop-filter: blur(8px);
+            text-align: center;
+            padding: 30px;
+            border-radius: 28px;
+            margin-top: 20px;
+            border: 1px solid rgba(32,178,170,0.2);
+            color: rgba(255,255,255,0.7);
+        }
+
+        .footer-links ul {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: #20b2aa;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px 15px; }
+            .hero-section h1 { font-size: 2em; }
+            h2 { font-size: 1.5em; }
+            .car-image { width: 100%; max-width: 260px; }
+            .labs-nav { border-radius: 20px; }
+            .lab-link { padding: 5px 12px; font-size: 12px; }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 20, 35, 0.8);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #20b2aa;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #48c9b0;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        
+        <!-- Шапка (hero) -->
+        <div class="hero-section">
+            <h1>Lexus: Путь к совершенству</h1>
+            <p>От амбициозной идеи до мирового лидера премиального автопрома</p>
+        </div>
+	<div class="container">
+        <!-- Навигация по лабораторным работам (верхняя панель) -->
+        <div class="labs-nav">
+            <a href="lab1.html" class="lab-link">Лабораторная №1</a>
+            <a href="lab2.html" class="lab-link">Лабораторная №2</a>
+            <a href="lab3.html" class="lab-link">Лабораторная №3</a>
+            <a href="lab4.html" class="lab-link">Лабораторная №4</a>
+            <a href="lab5.html" class="lab-link">Лабораторная №5</a>
+            <a href="lab6.html" class="lab-link">Лабораторная №6</a>
+            <a href="lab7.html" class="lab-link">Лабораторная №7</a>
+            <a href="lab8.html" class="lab-link">Лабораторная №8</a>
+            <a href="index.html" class="lab-link back-to-main">🏠 На главную</a>
+        </div>
+        <!-- Навигация внутри страницы — ПОСЛЕ ЗАГОЛОВКА -->
+        <div class="page-nav">
+            <a href="#history" class="nav-btn">📜 История</a>
+            <a href="#models" class="nav-btn">🚗 Модели</a>
+            <a href="#specs" class="nav-btn">📊 Характеристики</a>
+        </div>
+
+        <main>
+            <!-- История бренда -->
+            <section id="history">
+                <h2>📖 История создания бренда</h2>
+
+                <p>В начале 1980-х годов председатель Toyota <strong>Эйджи Тойода</strong> поставил амбициозную задачу: создать <strong>лучший в мире люксовый автомобиль</strong>. Проект получил кодовое название <strong>«Flagship-1»</strong>. Инженеры и дизайнеры работали в полной секретности, стремясь превзойти Mercedes-Benz, BMW и Jaguar.</p>
+
+                <div class="highlight big-text">
+                    ✨ Ключевой факт: Первый Lexus LS 400 был представлен в 1989 году на Детройтском автосалоне. Автомобиль поразил публику бесшумностью хода, надёжностью и инновационными технологиями.
+                </div>
+
+                <p>Инженеры построили <span class="highlight">более 450 прототипов</span> и провели свыше 2,6 миллиона километров испытаний. Результат превзошёл ожидания — Lexus мгновенно завоевал американский рынок.</p>
+
+                <blockquote>
+                    «Lexus создан не для того, чтобы быть как все. Он создан, чтобы быть лучше» — основатель проекта Flagship-1.
+                </blockquote>
+
+                <p>Гонщики часто повторяют: <q>Побеждает не самый быстрый, а самый надёжный</q>. Первые соревнования с участием Lexus прошли <time datetime="1989">в 1989 году</time>.</p>
+            </section>
+
+            <!-- Модели -->
+            <section id="models">
+                <h2>🏁 Ключевые модели в истории Lexus</h2>
+
+                <ul class="model-list">
+                    <li><strong>Lexus LS 400 (1989)</strong> — флагман, который изменил представление о японских люксовых авто.</li>
+                    <li><strong>Lexus RX (1998)</strong> — создатель сегмента премиальных кроссоверов.</li>
+                    <li><strong>Lexus LFA (2010)</strong> — суперкар с атмосферным V10 и ручной сборкой.</li>
+                    <li><strong>Lexus LC 500 (2017)</strong> — воплощение дизайнерской философии «L-finesse».</li>
+                    <li><strong>Lexus RZ (2023)</strong> — первый серийный электромобиль на новой платформе e-TNGA.</li>
+                </ul>
+
+                <aside>
+                    <h3>📌 Интересные факты</h3>
+                    <p>🏆 <strong>Lexus LFA</strong> — один из немногих суперкаров, собиравшихся вручную мастерами Takumi.</p>
+                    <p>⚡ <strong>Lexus RX 400h</strong> — первый в мире люксовый гибридный кроссовер (2005).</p>
+                    <p>🔋 <strong>Lexus RZ 450e</strong> — первый серийный электромобиль бренда.</p>
+                </aside>
+
+                <div class="image-gallery">
+                    <img class="car-image" src="https://avatars.mds.yandex.net/get-entity_search/7759284/1254257216/S600xU_2x" alt="Lexus LS 400" title="Lexus LS 400 — первый в истории бренда">
+                    <img class="car-image" src="https://avatars.mds.yandex.net/get-entity_search/2162801/1265391899/S600xU_2x" alt="Lexus LFA" title="Lexus LFA с легендарным двигателем V10">
+                    <img class="car-image" src="https://trashbox.ru/ifiles2/1564363_d5bfaa_logo.jpeg-max1.jpg/2021-12-15-lexus-rz-450e-4.webp" alt="Lexus RZ 450e" title="Электрическое будущее Lexus">
+                </div>
+
+                <h3>📚 Основные термины Lexus</h3>
+                <dl>
+                    <dt>🏁 Takumi (мастера)</dt>
+                    <dd>Высококвалифицированные специалисты, прошедшие многолетнее обучение. Именно они собирали LFA вручную.</dd>
+
+                    <dt>⚡ L-finesse</dt>
+                    <dd>Дизайн-философия Lexus, основанная на японской эстетике минимализма и интуитивности.</dd>
+
+                    <dt>🔄 e-TNGA</dt>
+                    <dd>Новая модульная платформа Toyota для электромобилей, на которой построен Lexus RZ.</dd>
+                </dl>
+            </section>
+
+            <!-- Технические характеристики -->
+            <section id="specs">
+                <h2>📊 Технические характеристики флагманов</h2>
+
+                <div class="table-wrapper">
+                    <table>
+                        <caption>Топ моделей Lexus</caption>
+                        <thead>
+                            <tr><th>Модель</th><th>Двигатель</th><th>Мощность (л.с.)</th><th>Разгон 0-100 км/ч</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>LS 400</div></div></div>?, 4.0 V8</div></div></div>?, 250</div></div></div>?, 8.5 сек</div></div></div>?</td>
+                            <tr><td colspan="2">Lexus LC (500 / 500h)</div></div></div>?, <td colspan="2">477 / 359 л.с.</div></div></div>?</td>
+                            <tr><td rowspan="2">LFA / LFA Nürburgring</div></div></div>?, 4.8 V10</div></div></div>?, 560</div></div></div>?, 3.7 сек</div></div></div>?</td>
+                            <tr><td>4.8 V10 (доработанный)</div></div></div>?, 571</div></div></div>?, 3.6 сек</div></div></div>?</td>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="highlight">
+                    <strong>🔍 Пояснение:</strong> строка LC использует <code>colspan="2"</code>, а LFA — <code>rowspan="2"</code>.
+                </div>
+
+                <div id="special-section">
+                    <h3>🎨 Философия дизайна</h3>
+                    <div class="cascade-demo">
+                        🔥 Этот блок демонстрирует каскад и специфичность: фон переопределён селектором #special-section .cascade-demo
+                    </div>
+                    <p>Концепция <strong>«L-finesse»</strong> — это японская эстетика минимализма и интуитивности. Каждая линия кузова имеет функциональное назначение.</p>
+                </div>
+
+                <h3>🔋 Инновации Lexus</h3>
+                <p>Lexus всегда был пионером гибридных технологий. В <time datetime="2005">2005 году</time> вышел <strong>RX 400h</strong> — первый люксовый гибрид.</p>
+
+                <h3>🔗 Полезные ссылки</h3>
+                <div class="link-group">
+                    <a href="https://www.lexus.com" target="_blank">🌍 Абсолютная ссылка: Официальный сайт Lexus</a>
+                    <a href="catalog.html">📄 Относительная ссылка: Каталог автомобилей</a>
+                    <a href="https://www.lexus.eu/cm-img/lexus-lfa/lexus_lfa_hero_2021.jpg" target="_blank">🖼️ Ссылка на изображение Lexus LFA</a>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="footer-links">
+                <p>Официальные ресурсы:</p>
+                <ul>
+                    <li><a href="https://www.lexus.com" target="_blank">🌍 Глобальный сайт Lexus</a></li>
+                    <li><a href="https://www.lexus.ru" target="_blank">🇷🇺 Lexus Россия</a></li>
+                    <li><a href="https://www.lexus-int.com" target="_blank">🌐 Lexus International</a></li>
+                </ul>
+            </div>
+            <p>© 2026 Lexus History | Разработано в учебных целях</p>
+            <p>Текущий год: 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            if (!particlesContainer) return;
+            
+            const particleCount = 60;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 6 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                const duration = Math.random() * 12 + 8;
+                particle.style.animationDuration = duration + 's';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                const colors = ['rgba(32,178,170,0.4)', 'rgba(72,201,176,0.3)', 'rgba(46,204,113,0.3)', 'rgba(93,173,226,0.3)'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('section, .hero-section, .image-gallery, .link-group, table, dl').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+        
+        createParticles();
+    </script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЛР №5 | Основы JavaScript (полный ввод данных)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+            color: #ffffff;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #fff, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .header p { color: rgba(255,255,255,0.6); }
+        .card {
+            background: rgba(25, 30, 45, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.3s;
+        }
+        .card:hover { transform: translateY(-3px); border-color: rgba(0,242,254,0.3); }
+        .card h2 {
+            color: #00f2fe;
+            border-left: 3px solid #00f2fe;
+            padding-left: 12px;
+            margin-bottom: 20px;
+        }
+        button {
+            background: rgba(0,242,254,0.2);
+            border: 1px solid rgba(0,242,254,0.4);
+            padding: 10px 20px;
+            border-radius: 30px;
+            color: #00f2fe;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: rgba(0,242,254,0.4);
+            transform: translateY(-2px);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            color: #0a0a0a;
+            border: none;
+        }
+        .console-output {
+            background: #0a0a0a;
+            padding: 15px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 13px;
+            color: #00f2fe;
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.4);
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Лабораторная работа №5</h1>
+            <p>Переменные • Типы данных • Операторы • Диалоговые окна</p>
+            <p style="font-size: 14px; margin-top: 10px;">✨ Все данные вводятся вручную через диалоговые окна</p>
+        </div>
+
+        <!-- Блок 1: Переменные -->
+        <div class="card">
+            <h2>📦 1-4, 14-16. Переменные и типы</h2>
+            <button id="inputVarsBtn" class="btn-primary">✏️ Ввести свои данные (имя, год, число, строку)</button>
+            <button id="showVarsBtn">📋 Показать переменные</button>
+            <button id="templateBtn">📝 Шаблонная строка (${})</button>
+            <div class="console-output" id="varsOutput"></div>
+        </div>
+
+        <!-- Блок 2: Диалоговые окна -->
+        <div class="card">
+            <h2>💬 5-8. Диалоговые окна</h2>
+            <button id="greetBtn">👋 Приветствие (prompt + alert)</button>
+            <button id="ageBtn">🎂 Возраст (prompt + Number)</button>
+            <button id="confirmBtn">❓ Confirm</button>
+            <div class="console-output" id="dialogsOutput"></div>
+        </div>
+
+        <!-- Блок 3: Операторы -->
+        <div class="card">
+            <h2>🧮 9-13. Операторы (%, >, <, ===, &&, ||, !)</h2>
+            <button id="moduloBtn">% Остаток от деления</button>
+            <button id="compareBtn">> и < Сравнение</button>
+            <button id="strictBtn">=== Строгое сравнение</button>
+            <button id="logicBtn">&& и || Логические</button>
+            <button id="notBtn">! Оператор НЕ</button>
+            <div class="console-output" id="operatorsOutput"></div>
+        </div>
+
+        <!-- Блок 4: Преобразование и float (с вводом пользователя) -->
+        <div class="card">
+            <h2>🔢 17-19. Преобразование строки и числа с плавающей точкой</h2>
+            <button id="convertBtn">🔄 Преобразовать строку в число (+5)</button>
+            <button id="floatBtn">⚠️ Вычислить 0.1 + 0.2</button>
+            <div class="console-output" id="convertOutput"></div>
+        </div>
+
+        <!-- Блок 5: Калькулятор -->
+        <div class="card">
+            <h2>🧮 20. Калькулятор суммы двух чисел</h2>
+            <button id="calcBtn" class="btn-primary">➕ Запросить два числа и вывести сумму</button>
+            <div class="console-output" id="calcOutput"></div>
+        </div>
+
+        <div class="footer">
+            <p>Лабораторная работа №5 | ВСЕ ДАННЫЕ ВВОДЯТСЯ ВРУЧНУЮ через prompt</p>
+        </div>
+    </div>
+
+    <script>
+        // ========== ПЕРЕМЕННЫЕ (заполняются при вводе) ==========
+        let myName = "не введено";
+        let birthYear = 0;
+        let myNumber = 0;
+        let myString = "не введено";
+        let undefinedVar;
+        let nullVar = null;
+        let isDataEntered = false;
+
+        // ========== ПУНКТЫ 1-4, 14-16: ВВОД ДАННЫХ ==========
+        function inputAllData() {
+            // Пункт 1: let с именем
+            myName = prompt("Введите ваше имя:", "Студент Иванов");
+            if (!myName) myName = "Студент";
+            
+            // Пункт 2: const с годом рождения
+            let yearInput = prompt("Введите ваш год рождения:", "2000");
+            birthYear = Number(yearInput);
+            if (isNaN(birthYear)) birthYear = 2000;
+            
+            // Пункт 4: переменная с числом
+            let numInput = prompt("Введите любое число:", "42");
+            myNumber = Number(numInput);
+            if (isNaN(myNumber)) myNumber = 42;
+            
+            // Пункт 4: переменная со строкой
+            myString = prompt("Введите любую строку:", "Привет, мир!");
+            if (!myString) myString = "Привет";
+            
+            isDataEntered = true;
+            
+            // Пункт 3: вывод в консоль
+            console.log("=== ВВЕДЁННЫЕ ДАННЫЕ ===");
+            console.log("myName:", myName);
+            console.log("birthYear:", birthYear);
+            console.log("myNumber:", myNumber, "тип:", typeof myNumber);
+            console.log("myString:", myString, "тип:", typeof myString);
+            console.log("undefinedVar:", undefinedVar, "тип:", typeof undefinedVar);
+            console.log("nullVar:", nullVar, "тип:", typeof nullVar);
+            
+            alert(`Данные сохранены!\nИмя: ${myName}\nГод рождения: ${birthYear}\nЧисло: ${myNumber}\nСтрока: "${myString}"`);
+            showVariables();
+        }
+        
+        // Пункт 3 + 14-15: показать переменные
+        function showVariables() {
+            if (!isDataEntered) {
+                document.getElementById('varsOutput').innerHTML = `<p>⚠️ Сначала нажмите "Ввести свои данные"</p>`;
+                return;
+            }
+            let output = "";
+            output += `<p><strong>📌 Пункт 1-2:</strong> let myName = "${myName}" | const birthYear = ${birthYear}</p>`;
+            output += `<p><strong>📌 Пункт 4:</strong> число = ${myNumber} (${typeof myNumber}) | строка = "${myString}" (${typeof myString})</p>`;
+            output += `<p><strong>📌 Пункт 14:</strong> undefinedVar = ${undefinedVar} (тип: ${typeof undefinedVar})</p>`;
+            output += `<p><strong>📌 Пункт 15:</strong> nullVar = ${nullVar} (тип: ${typeof nullVar}) — особенность JavaScript</p>`;
+            document.getElementById('varsOutput').innerHTML = output;
+        }
+        
+        // Пункт 16: шаблонная строка
+        function showTemplate() {
+            if (!isDataEntered) {
+                document.getElementById('varsOutput').innerHTML = `<p>⚠️ Сначала нажмите "Ввести свои данные"</p>`;
+                return;
+            }
+            let currentYear = new Date().getFullYear();
+            let age = currentYear - birthYear;
+            let message = `Привет! Меня зовут ${myName}, мой год рождения ${birthYear}. Мне ${age} лет (или скоро будет). Сейчас ${currentYear} год.`;
+            document.getElementById('varsOutput').innerHTML = `<p><strong>📌 Пункт 16 (шаблонная строка с \${}):</strong><br>${message}</p>`;
+            console.log("Шаблонная строка:", message);
+        }
+        
+        // ========== ПУНКТЫ 5-8: ДИАЛОГОВЫЕ ОКНА ==========
+        function askName() {
+            let userName = prompt("Введите ваше имя:", "Гость");
+            if (userName && userName.trim()) {
+                alert(`Привет, ${userName}! Добро пожаловать!`);
+                document.getElementById('dialogsOutput').innerHTML = `<p>👋 Вы ввели имя: "${userName}"</p>`;
+            } else {
+                document.getElementById('dialogsOutput').innerHTML = `<p>👋 Вы не ввели имя</p>`;
+            }
+        }
+        
+        function askAge() {
+            let ageInput = prompt("Сколько вам лет?", "18");
+            let ageNumber = Number(ageInput);
+            if (!isNaN(ageNumber) && ageInput !== null && ageInput !== "") {
+                alert(`Вам ${ageNumber} лет!`);
+                // Пункт 7: сложение числа и строки
+                let ageWithText = ageNumber + " лет";
+                console.log(`Пункт 7: ${ageNumber} + " лет" =`, ageWithText, "тип:", typeof ageWithText);
+                document.getElementById('dialogsOutput').innerHTML = `<p>🎂 Возраст: ${ageNumber} (число, тип ${typeof ageNumber})<br>➕ Пункт 7 (число + строка): "${ageWithText}" (тип ${typeof ageWithText})</p>`;
+            } else {
+                alert("Некорректный ввод возраста!");
+                document.getElementById('dialogsOutput').innerHTML = `<p>❌ Некорректный ввод возраста</p>`;
+            }
+        }
+        
+        function askConfirm() {
+            let isAdult = confirm("Вам больше 18 лет?");
+            alert(`Вы ответили: ${isAdult}`);
+            document.getElementById('dialogsOutput').innerHTML = `<p>❓ Результат confirm: ${isAdult} (тип: ${typeof isAdult})</p>`;
+            console.log("Confirm результат:", isAdult);
+        }
+        
+        // ========== ПУНКТЫ 9-13: ОПЕРАТОРЫ ==========
+        function getModulo() {
+            let a = 17, b = 5;
+            let result = a % b;
+            document.getElementById('operatorsOutput').innerHTML = `<p><strong>📌 Пункт 9:</strong> ${a} % ${b} = ${result} (остаток от деления)</p>`;
+        }
+        
+        function getComparison() {
+            let a = 15, b = 10;
+            alert(`${a} > ${b} = ${a > b}\n${a} < ${b} = ${a < b}`);
+            document.getElementById('operatorsOutput').innerHTML = `<p><strong>📌 Пункт 10:</strong> ${a} > ${b} = ${a > b} | ${a} < ${b} = ${a < b}</p>`;
+        }
+        
+        function getStrict() {
+            let output = "<strong>📌 Пункт 11: строгое сравнение (===)</strong><br>";
+            output += `🔹 "5" === 5 → ${"5" === 5} (разные типы: string и number)<br>`;
+            output += `🔹 5 === 5 → ${5 === 5} (одинаковые типы и значения)<br>`;
+            output += `🔹 "hello" === "hello" → ${"hello" === "hello"}<br>`;
+            output += `💡 Строгое сравнение НЕ приводит типы. Значения разных типов всегда НЕ равны.`;
+            document.getElementById('operatorsOutput').innerHTML = `<p>${output}</p>`;
+        }
+        
+        function getLogic() {
+            let output = "<strong>📌 Пункт 12: логические операторы && (И) и || (ИЛИ)</strong><br>";
+            output += `🔹 (10 > 5 && 20 > 15) → ${10 > 5 && 20 > 15} (оба условия истинны)<br>`;
+            output += `🔹 (10 > 20 && 5 > 3) → ${10 > 20 && 5 > 3} (первое ложно)<br>`;
+            output += `🔹 (10 > 20 || 5 > 3) → ${10 > 20 || 5 > 3} (второе истинно)<br>`;
+            output += `🔹 (10 > 5 || 20 > 30) → ${10 > 5 || 20 > 30} (первое истинно)<br>`;
+            output += `💡 && возвращает true, если ВСЕ условия истинны<br>`;
+            output += `💡 || возвращает true, если ХОТЯ БЫ ОДНО условие истинно`;
+            document.getElementById('operatorsOutput').innerHTML = `<p>${output}</p>`;
+        }
+        
+        function getNot() {
+            let output = "<strong>📌 Пункт 13: оператор НЕ (!)</strong><br>";
+            output += `🔹 !(10 > 5) → ${!(10 > 5)} (инвертирует true в false)<br>`;
+            output += `🔹 !(10 < 5) → ${!(10 < 5)} (инвертирует false в true)<br>`;
+            output += `🔹 !!true → ${!!true} (двойное НЕ возвращает исходное значение)`;
+            document.getElementById('operatorsOutput').innerHTML = `<p>${output}</p>`;
+        }
+        
+        // ========== ПУНКТЫ 17-19: ПРЕОБРАЗОВАНИЕ И FLOAT (С ВВОДОМ ПОЛЬЗОВАТЕЛЯ) ==========
+        
+        // Пункт 17: пользователь сам вводит строку для преобразования
+        function convertString() {
+            let userString = prompt("Введите строку, содержащую число (например, 123):", "123");
+            
+            if (userString === null || userString === "") {
+                document.getElementById('convertOutput').innerHTML = `<p>⚠️ Вы отменили ввод или ввели пустую строку</p>`;
+                return;
+            }
+            
+            let converted = Number(userString);
+            
+            if (isNaN(converted)) {
+                alert(`"${userString}" — это НЕ число! Преобразование не удалось.`);
+                document.getElementById('convertOutput').innerHTML = `<p><strong>📌 Пункт 17:</strong> "${userString}" → НЕ число (NaN)<br>💡 NaN (Not a Number) — результат неудачного преобразования</p>`;
+            } else {
+                let sum = converted + 5;
+                alert(`"${userString}" → число ${converted}\n${converted} + 5 = ${sum}`);
+                document.getElementById('convertOutput').innerHTML = `<p><strong>📌 Пункт 17:</strong> "${userString}" → число ${converted} (${typeof converted})<br>${converted} + 5 = ${sum}</p>`;
+            }
+            console.log(`Преобразование "${userString}" в число:`, converted);
+        }
+        
+        // Пункт 19: 0.1 + 0.2 (с объяснением)
+        function showFloat() {
+            let result = 0.1 + 0.2;
+            let output = "<strong>📌 Пункт 19: проблема с плавающей точкой</strong><br>";
+            output += `🔹 0.1 + 0.2 = ${result}<br>`;
+            output += `🔹 Ожидалось: 0.3<br>`;
+            output += `💡 Причина: JavaScript использует стандарт IEEE 754 для чисел с плавающей точкой.<br>`;
+            output += `Некоторые десятичные дроби не могут быть точно представлены в двоичной системе.<br>`;
+            output += `📌 Решение: использовать .toFixed(2) → ${result.toFixed(2)}<br>`;
+            output += `📌 Сравнение с погрешностью: Math.abs(0.1 + 0.2 - 0.3) < 0.000000001 → ${Math.abs(0.1 + 0.2 - 0.3) < 0.000000001}`;
+            document.getElementById('convertOutput').innerHTML = `<p>${output}</p>`;
+            console.log("0.1 + 0.2 =", result, "погрешность из-за IEEE 754");
+        }
+        
+        // ========== ПУНКТ 18: НАМЕРЕННАЯ ОШИБКА ==========
+        console.log("⚠️ Пункт 18: для демонстрации ошибки раскомментируйте строку ниже:");
+        // console.log(несуществующаяПеременная);  // ← Раскомментируйте для ошибки ReferenceError
+        
+        // ========== ПУНКТ 20: КАЛЬКУЛЯТОР СУММЫ ==========
+        function calculateSum() {
+            let num1 = prompt("Введите первое число:", "0");
+            let num2 = prompt("Введите второе число:", "0");
+            
+            if (num1 === null || num2 === null) {
+                document.getElementById('calcOutput').innerHTML = `<p>⚠️ Вы отменили ввод</p>`;
+                return;
+            }
+            
+            let number1 = Number(num1);
+            let number2 = Number(num2);
+            
+            if (isNaN(number1) || isNaN(number2)) {
+                alert("Ошибка! Введите корректные числа!");
+                document.getElementById('calcOutput').innerHTML = `<p>❌ Ошибка: "${num1}" или "${num2}" не являются числами</p>`;
+                return;
+            }
+            
+            let sum = number1 + number2;
+            alert(`${number1} + ${number2} = ${sum}`);
+            document.getElementById('calcOutput').innerHTML = `<p>✅ Результат: ${number1} + ${number2} = ${sum}</p>`;
+            console.log(`Сумма чисел: ${number1} + ${number2} = ${sum}`);
+        }
+        
+        // ========== НАЗНАЧЕНИЕ ОБРАБОТЧИКОВ ==========
+        document.getElementById('inputVarsBtn').addEventListener('click', inputAllData);
+        document.getElementById('showVarsBtn').addEventListener('click', showVariables);
+        document.getElementById('templateBtn').addEventListener('click', showTemplate);
+        document.getElementById('greetBtn').addEventListener('click', askName);
+        document.getElementById('ageBtn').addEventListener('click', askAge);
+        document.getElementById('confirmBtn').addEventListener('click', askConfirm);
+        document.getElementById('moduloBtn').addEventListener('click', getModulo);
+        document.getElementById('compareBtn').addEventListener('click', getComparison);
+        document.getElementById('strictBtn').addEventListener('click', getStrict);
+        document.getElementById('logicBtn').addEventListener('click', getLogic);
+        document.getElementById('notBtn').addEventListener('click', getNot);
+        document.getElementById('convertBtn').addEventListener('click', convertString);
+        document.getElementById('floatBtn').addEventListener('click', showFloat);
+        document.getElementById('calcBtn').addEventListener('click', calculateSum);
+        
+        console.log("✅ Лабораторная работа №5 готова! Все данные вводятся вручную.");
+        console.log("📌 Нажмите 'Ввести свои данные' для начала работы.");
+    </script>
+</body>
+</html>

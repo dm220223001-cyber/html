@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лекция 1 | Основы веб-разработки и структура HTML-документа</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                #0a0f1a 0%, 
+                #0f1623 15%, 
+                #1a1f35 30%, 
+                #0d1b2a 45%, 
+                #1b263b 60%, 
+                #0f1623 80%, 
+                #0a0f1a 100%);
+            background-size: 300% 300%;
+            animation: gradientShift 12s ease infinite;
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 40%, rgba(52,152,219,0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 60%, rgba(155,89,182,0.12) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, rgba(46,204,113,0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+            animation: subtlePulse 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 50% 100%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 50% 0%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes subtlePulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(52,152,219,0.4);
+            border-radius: 50%;
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-20vh) translateX(50px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            padding: 30px 20px;
+        }
+
+        .lecture-header {
+            background: rgba(25, 30, 45, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 40px;
+            margin-bottom: 35px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.08);
+            animation: fadeInDown 0.8s ease-out;
+            transition: all 0.3s;
+        }
+
+        .lecture-header:hover {
+            border-color: rgba(52,152,219,0.3);
+            box-shadow: 0 0 30px rgba(52,152,219,0.1);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .lecture-header h1 {
+            font-size: 2.8em;
+            background: linear-gradient(135deg, #ffffff, #3498db, #9b59b6);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 15px;
+            animation: textGradient 4s ease infinite;
+        }
+
+        @keyframes textGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .lecture-header .lecture-number {
+            color: #3498db;
+            font-size: 14px;
+            letter-spacing: 4px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: rgba(52,152,219,0.15);
+            border: 1px solid rgba(52,152,219,0.4);
+            border-radius: 40px;
+            padding: 12px 30px;
+            color: #3498db;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(52,152,219,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .back-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .back-btn:hover {
+            background: #20b2aa;
+            color: white;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(32,178,170,0.3);
+            border-color: transparent;
+        }
+
+        .back-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .content {
+            background: rgba(25, 30, 45, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 50px;
+            border: 1px solid rgba(255,255,255,0.06);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            transition: all 0.3s;
+            color: #ffffff;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content:hover {
+            border-color: rgba(32,178,170,0.15);
+        }
+
+        .content h2 {
+            color: #20b2aa;
+            margin: 35px 0 20px 0;
+            font-size: 1.9em;
+            border-left: 4px solid #20b2aa;
+            padding-left: 18px;
+            transition: transform 0.3s;
+        }
+
+        .content h2:hover {
+            transform: translateX(5px);
+        }
+
+        .content h3 {
+            color: #9b59b6;
+            margin: 25px 0 12px 0;
+            font-size: 1.5em;
+        }
+
+        .content h4 {
+            color: #f39c12;
+            margin: 20px 0 10px 0;
+            font-size: 1.2em;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            text-align: justify;
+            line-height: 1.7;
+            color: #ffffff;
+        }
+
+        .content ul, .content ol {
+            margin: 15px 0 15px 30px;
+            color: #ffffff;
+        }
+
+        .content li {
+            margin-bottom: 10px;
+            transition: transform 0.2s;
+            color: #ffffff;
+        }
+
+        .content li:hover {
+            transform: translateX(5px);
+            color: #20b2aa;
+        }
+
+        .code-block {
+            background: rgba(10, 14, 25, 0.85);
+            border-left: 4px solid #20b2aa;
+            padding: 20px;
+            border-radius: 14px;
+            margin: 20px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            line-height: 1.6;
+            transition: all 0.3s;
+            position: relative;
+            color: #ffffff;
+        }
+
+        .code-block:hover {
+            transform: scale(1.01);
+            border-left-color: #48c9b0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .code-block code {
+            color: #48c9b0;
+        }
+
+        .note {
+            background: rgba(32,178,170,0.12);
+            border-left: 4px solid #20b2aa;
+            padding: 20px;
+            border-radius: 14px;
+            margin: 25px 0;
+            transition: all 0.3s;
+            color: #ffffff;
+        }
+
+        .note:hover {
+            background: rgba(32,178,170,0.18);
+            transform: translateX(5px);
+        }
+
+        .warning-note {
+            background: rgba(243,156,18,0.12);
+            border-left: 4px solid #f39c12;
+            padding: 20px;
+            border-radius: 14px;
+            margin: 25px 0;
+            transition: all 0.3s;
+            color: #ffffff;
+        }
+
+        .warning-note:hover {
+            background: rgba(243,156,18,0.18);
+            transform: translateX(5px);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .info-card {
+            background: rgba(255,255,255,0.04);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            cursor: pointer;
+            color: #ffffff;
+        }
+
+        .info-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(32,178,170,0.3);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .info-card:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .info-card h4 {
+            color: #20b2aa;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .info-card p {
+            font-size: 14px;
+            margin-bottom: 0;
+            color: #ffffff;
+        }
+
+        .info-card code {
+            color: #48c9b0;
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 20, 35, 0.8);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #20b2aa;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #48c9b0;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px 15px; }
+            .lecture-header { padding: 25px; }
+            .lecture-header h1 { font-size: 1.8em; }
+            .content { padding: 25px; }
+            .content h2 { font-size: 1.5em; }
+            .info-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="lecture-header">
+            <div class="lecture-number">Лекция №1</div>
+            <h1>📄 Основы веб-разработки и структура HTML-документа</h1>
+            <a href="index.html" class="back-btn">← На главную</a>
+        </div>
+        
+        <div class="content">
+            <h2>📋 План лекции</h2>
+            <ul>
+                <li>Что такое HTML, CSS, JavaScript и их роли в веб-разработке</li>
+                <li>История создания веб-технологий</li>
+                <li>Общая структура HTML-документа</li>
+                <li>Основные теги: заголовки, параграфы, списки, ссылки, изображения</li>
+                <li>Атрибуты тегов и их использование</li>
+                <li>Создание первой веб-страницы</li>
+                <li>Практические советы и инструменты разработчика</li>
+            </ul>
+
+            <h2>1. Что такое веб-разработка?</h2>
+            <p>Веб-разработка — это процесс создания веб-сайтов и веб-приложений для сети Интернет. Она включает в себя несколько направлений: frontend-разработка (клиентская часть, то есть то, что видит пользователь в браузере) и backend-разработка (серверная часть, которая обрабатывает данные и взаимодействует с базами данных). В данном курсе мы сфокусируемся на <strong>frontend-разработке</strong> — создании интерфейсов с помощью HTML, CSS и JavaScript.</p>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>🏗️ HTML</h4>
+                    <p>Строительные леса сайта. Определяет структуру и содержание страницы: заголовки, абзацы, изображения, кнопки.</p>
+                </div>
+                <div class="info-card">
+                    <h4>🎨 CSS</h4>
+                    <p>Дизайн и стилизация. Отвечает за цвета, шрифты, расположение элементов, анимацию и адаптивность.</p>
+                </div>
+                <div class="info-card">
+                    <h4>⚡ JavaScript</h4>
+                    <p>Интерактивность и логика. Обрабатывает клики, отправку форм, загружает данные без перезагрузки страницы.</p>
+                </div>
+            </div>
+
+            <h2>2. Что такое HTML?</h2>
+            <p><strong>HTML (HyperText Markup Language)</strong> — это стандартизированный язык разметки документов для просмотра веб-страниц в браузере. Основная задача HTML — описать структуру веб-страницы: какие элементы на ней присутствуют, как они расположены и какую смысловую роль выполняют. HTML задаёт только каркас документа, а не его поведение или внешний вид.</p>
+            <p><strong>HTML был разработан</strong> британским учёным <strong>Тимом Бернерсом-Ли</strong> приблизительно в 1986–1991 годах во время его работы в ЦЕРНе (Европейская организация по ядерным исследованиям). Первая версия HTML была создана для обмена научными документами между исследователями. Сегодня HTML является основой всего Всемирной паутины.</p>
+            
+            <div class="note">
+                <strong>📌 Интересный факт:</strong> Первый веб-сайт в истории был запущен 6 августа 1991 года. Он объяснял, что такое Всемирная паутина, как создать свой веб-сервер и как пользоваться браузером. Этот сайт до сих пор доступен по адресу <code>info.cern.ch</code>.
+            </div>
+
+            <h2>3. Что такое CSS?</h2>
+            <p><strong>CSS (Cascading Style Sheets)</strong> — это язык стилей, с помощью которого оформляют веб-страницы. Он определяет, как должны отображаться элементы HTML, включая макет, цвета, шрифты, отступы и другие визуальные аспекты. CSS используют, чтобы отделить содержание веб-страницы от её оформления. Это позволяет легко изменять дизайн всего сайта, не трогая HTML-код.</p>
+            <p>CSS был предложен Хоконом Виум-Ли в 1994 году, а первая версия спецификации была опубликована в 1996 году. До появления CSS дизайн веб-страниц создавался с помощью таблиц и атрибутов HTML, что было крайне неудобно.</p>
+
+            <h2>4. Что такое JavaScript?</h2>
+            <p><strong>JavaScript</strong> — это язык программирования, с помощью которого сайты делают интерактивными. Он позволяет кнопкам реагировать на клики, формам проверять введённые данные, меню плавно открываться при наведении курсора, а также асинхронно загружать данные с сервера без перезагрузки страницы (технология AJAX).</p>
+            <p>JavaScript был создан в <strong>1995 году</strong> Брэнданом Эйхом, работающим в компании Netscape. Изначально он назывался Mocha, затем LiveScript, и только потом получил имя JavaScript. Несмотря на схожесть названия, JavaScript не имеет прямого отношения к языку Java.</p>
+            
+            <div class="warning-note">
+                <strong>⚠️ Важно понимать:</strong> HTML, CSS и JavaScript работают вместе, но выполняют разные задачи. Нельзя «написать сайт на JavaScript» без HTML, и нельзя «стилизовать» сайт без CSS. Это три взаимодополняющих технологии.
+            </div>
+
+            <h2>5. Структура HTML-документа</h2>
+            <p>Любой HTML-документ имеет строгую иерархическую структуру. Рассмотрим её подробно:</p>
+            
+            <div class="code-block">
+<code>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="ru"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Название страницы (отображается во вкладке браузера)&lt;/title&gt;
+    &lt;meta name="description" content="Краткое описание страницы для поисковых систем"&gt;
+    &lt;link rel="stylesheet" href="styles.css"&gt;
+    &lt;script src="script.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- Здесь находится всё видимое содержимое страницы --&gt;
+    &lt;header&gt;Шапка сайта&lt;/header&gt;
+    &lt;main&gt;Основное содержание&lt;/main&gt;
+    &lt;footer&gt;Подвал сайта&lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code>
+            </div>
+
+            <h3>Пояснение основных элементов:</h3>
+            <ul>
+                <li><strong>&lt;!DOCTYPE html&gt;</strong> — объявление типа документа. Оно указывает браузеру, что это HTML5-документ. Должно быть самым первым в файле.</li>
+                <li><strong>&lt;html lang="ru"&gt;</strong> — корневой элемент страницы. Атрибут lang указывает основной язык содержимого.</li>
+                <li><strong>&lt;head&gt;</strong> — контейнер для метаданных. Всё, что здесь находится, не отображается на самой странице, но важно для браузера и поисковых систем.</li>
+                <li><strong>&lt;meta charset="UTF-8"&gt;</strong> — задаёт кодировку символов. UTF-8 поддерживает все символы Unicode, включая русские буквы и эмодзи.</li>
+                <li><strong>&lt;meta name="viewport"&gt;</strong> — управляет отображением на мобильных устройствах. <code>width=device-width</code> устанавливает ширину окна просмотра равной ширине экрана устройства.</li>
+                <li><strong>&lt;title&gt;</strong> — заголовок страницы, отображаемый во вкладке браузера и в результатах поиска.</li>
+                <li><strong>&lt;body&gt;</strong> — контейнер для всего видимого содержимого страницы.</li>
+                <li><strong>&lt;!-- комментарий --&gt;</strong> — комментарии не отображаются на странице и служат для пояснения кода разработчикам.</li>
+            </ul>
+
+            <h2>6. Основные теги HTML</h2>
+            
+            <h3>6.1. Заголовки (&lt;h1&gt; — &lt;h6&gt;)</h3>
+            <p>Теги заголовков определяют иерархию информации на странице. <code>&lt;h1&gt;</code> — самый важный заголовок (обычно один на странице), <code>&lt;h2&gt;</code> — подзаголовки разделов, <code>&lt;h3&gt;</code> — подразделы и так далее. Использование правильной иерархии заголовков важно для SEO-оптимизации.</p>
+            <div class="code-block">
+<code>
+&lt;h1&gt;Главный заголовок страницы&lt;/h1&gt;
+&lt;h2&gt;Раздел 1&lt;/h2&gt;
+&lt;h3&gt;Подраздел 1.1&lt;/h3&gt;
+&lt;h2&gt;Раздел 2&lt;/h2&gt;
+&lt;h3&gt;Подраздел 2.1&lt;/h3&gt;
+&lt;h4&gt;Подподраздел 2.1.1&lt;/h4&gt;
+</code>
+            </div>
+
+            <h3>6.2. Параграфы (&lt;p&gt;)</h3>
+            <p>Тег <code>&lt;p&gt;</code> (от англ. paragraph) используется для создания абзацев текста. Браузер автоматически добавляет отступы до и после каждого абзаца.</p>
+            <div class="code-block"><code>&lt;p&gt;Это первый абзац текста. Он будет отделён от следующего абзаца отступом.&lt;/p&gt;</code></div>
+
+            <h3>6.3. Списки</h3>
+            <p>Существует три основных типа списков:</p>
+            <ul>
+                <li><strong>Маркированный список (&lt;ul&gt;)</strong> — элементы отмечаются маркерами (точками, кружками).</li>
+                <li><strong>Нумерованный список (&lt;ol&gt;)</strong> — элементы нумеруются автоматически.</li>
+                <li><strong>Список определений (&lt;dl&gt;)</strong> — состоит из терминов и их описаний.</li>
+            </ul>
+            <div class="code-block">
+<code>
+&lt;!-- Маркированный список --&gt;
+&lt;ul&gt;
+    &lt;li&gt;Первый пункт&lt;/li&gt;
+    &lt;li&gt;Второй пункт&lt;/li&gt;
+    &lt;li&gt;Третий пункт&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!-- Нумерованный список --&gt;
+&lt;ol&gt;
+    &lt;li&gt;Шаг 1&lt;/li&gt;
+    &lt;li&gt;Шаг 2&lt;/li&gt;
+    &lt;li&gt;Шаг 3&lt;/li&gt;
+&lt;/ol&gt;
+</code>
+            </div>
+
+            <h3>6.4. Ссылки (&lt;a&gt;)</h3>
+            <p>Тег <code>&lt;a&gt;</code> (от англ. anchor — якорь) создаёт гиперссылки. Атрибут <code>href</code> (hypertext reference) указывает адрес перехода.</p>
+            <div class="code-block">
+<code>
+&lt;!-- Внешняя ссылка --&gt;
+&lt;a href="https://www.google.com"&gt;Перейти на Google&lt;/a&gt;
+
+&lt;!-- Внутренняя ссылка --&gt;
+&lt;a href="about.html"&gt;О нас&lt;/a&gt;
+
+&lt;!-- Ссылка на email --&gt;
+&lt;a href="mailto:info@example.com"&gt;Написать нам&lt;/a&gt;
+
+&lt;!-- Ссылка на телефон --&gt;
+&lt;a href="tel:+71234567890"&gt;Позвонить&lt;/a&gt;
+
+&lt;!-- Открыть в новой вкладке --&gt;
+&lt;a href="https://example.com" target="_blank"&gt;Открыть в новой вкладке&lt;/a&gt;
+</code>
+            </div>
+            <div class="note">
+                <strong>💡 Полезный атрибут target="_blank":</strong> открывает ссылку в новой вкладке. Это удобно для внешних сайтов, чтобы пользователь не покидал вашу страницу. Однако для внутренних ссылок лучше этого не делать.
+            </div>
+
+            <h3>6.5. Изображения (&lt;img&gt;)</h3>
+            <p>Тег <code>&lt;img&gt;</code> — самостоятельный (не требует закрывающего тега). Обязательные атрибуты: <code>src</code> (источник изображения) и <code>alt</code> (альтернативный текст).</p>
+            <div class="code-block">
+<code>
+&lt;!-- Базовое изображение --&gt;
+&lt;img src="photo.jpg" alt="Описание фотографии"&gt;
+
+&lt;!-- С указанием размеров --&gt;
+&lt;img src="photo.jpg" alt="Описание" width="300" height="200"&gt;
+
+&lt;!-- С подсказкой при наведении --&gt;
+&lt;img src="photo.jpg" alt="Описание" title="Всплывающая подсказка"&gt;
+</code>
+            </div>
+            <div class="warning-note">
+                <strong>⚠️ Атрибут alt — обязательный!</strong> Он отображается, если изображение не загрузилось, и используется скринридерами для незрячих пользователей. Это важно для доступности (a11y) и SEO.
+            </div>
+
+            <h3>6.6. Форматирование текста</h3>
+            <p>Для выделения текста используются специальные теги:</p>
+            <div class="code-block">
+<code>
+&lt;strong&gt;Жирный текст (смысловое выделение)&lt;/strong&gt;
+&lt;b&gt;Жирный текст (визуально)&lt;/b&gt;
+&lt;em&gt;Курсив (смысловое ударение)&lt;/em&gt;
+&lt;i&gt;Курсив (визуально)&lt;/i&gt;
+&lt;mark&gt;Выделенный цветом текст&lt;/mark&gt;
+&lt;small&gt;Мелкий текст&lt;/small&gt;
+&lt;del&gt;~~Зачёркнутый текст~~&lt;/del&gt;
+&lt;ins&gt;Вставленный текст&lt;/ins&gt;
+&lt;sub&gt;Подстрочный текст&lt;/sub&gt;
+&lt;sup&gt;Надстрочный текст&lt;/sup&gt;
+</code>
+            </div>
+
+            <h2>7. Атрибуты тегов</h2>
+            <p>Атрибуты предоставляют дополнительную информацию об элементах. Они записываются внутри открывающего тега в формате <code>имя="значение"</code>.</p>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>id</h4>
+                    <p>Уникальный идентификатор элемента. Должен быть уникальным на всей странице.</p>
+                    <code>&lt;div id="header"&gt;</code>
+                </div>
+                <div class="info-card">
+                    <h4>class</h4>
+                    <p>Класс элемента. Может быть одинаковым у нескольких элементов. Позволяет группировать элементы для стилизации.</p>
+                    <code>&lt;p class="text-center"&gt;</code>
+                </div>
+                <div class="info-card">
+                    <h4>style</h4>
+                    <p>Прямое CSS-стилизование элемента (инлайновые стили). Рекомендуется использовать редко.</p>
+                    <code>&lt;div style="color: #20b2aa;"&gt;</code>
+                </div>
+                <div class="info-card">
+                    <h4>data-*</h4>
+                    <p>Пользовательские атрибуты для хранения дополнительных данных, доступных через JavaScript.</p>
+                    <code>&lt;div data-id="123"&gt;</code>
+                </div>
+            </div>
+
+            <h2>8. Создание первой веб-страницы</h2>
+            <p>Давайте создадим нашу первую веб-страницу шаг за шагом:</p>
+            <ol>
+                <li>Откройте любой текстовый редактор (Блокнот, VS Code, Sublime Text, Notepad++).</li>
+                <li>Создайте новый файл и сохраните его с именем <code>index.html</code>.</li>
+                <li>Скопируйте следующий код в файл:</li>
+            </ol>
+            <div class="code-block">
+<code>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="ru"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Моя первая страница&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Добро пожаловать на мой первый сайт!&lt;/h1&gt;
+    &lt;p&gt;Это моя первая веб-страница, созданная с помощью HTML.&lt;/p&gt;
+    &lt;h2&gt;Мои любимые технологии:&lt;/h2&gt;
+    &lt;ul&gt;
+        &lt;li&gt;HTML — для структуры&lt;/li&gt;
+        &lt;li&gt;CSS — для красоты&lt;/li&gt;
+        &lt;li&gt;JavaScript — для интерактивности&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;p&gt;
+        &lt;a href="https://www.w3schools.com" target="_blank"&gt;
+            Узнать больше о веб-разработке
+        &lt;/a&gt;
+    &lt;/p&gt;
+    &lt;img src="https://picsum.photos/300/200" alt="Случайное изображение"&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code>
+            </div>
+            <ol start="4">
+                <li>Сохраните файл и откройте его в любом браузере (дважды кликните по файлу).</li>
+                <li>Поздравляю! Вы создали свою первую веб-страницу.</li>
+            </ol>
+
+            <h2>9. Инструменты разработчика</h2>
+            <p>Современные браузеры имеют встроенные инструменты для разработчиков, которые помогут вам отлаживать HTML, CSS и JavaScript.</p>
+            <ul>
+                <li><strong>Как открыть:</strong> нажмите клавишу <code>F12</code> или <code>Ctrl+Shift+I</code> (Windows) / <code>Cmd+Option+I</code> (Mac).</li>
+                <li><strong>Вкладка Elements (Элементы):</strong> позволяет просматривать и редактировать HTML-структуру страницы в реальном времени.</li>
+                <li><strong>Вкладка Styles (Стили):</strong> показывает все CSS-правила, применённые к выбранному элементу.</li>
+                <li><strong>Вкладка Console (Консоль):</strong> для выполнения JavaScript-кода и просмотра ошибок.</li>
+                <li><strong>Вкладка Network (Сеть):</strong> показывает все сетевые запросы, загрузку файлов, изображений.</li>
+            </ul>
+            <div class="note">
+                <strong>💡 Совет:</strong> В инструментах разработчика можно редактировать HTML и CSS прямо в браузере и сразу видеть изменения. Это отличный способ экспериментировать и учиться, не боясь сломать исходный код.
+            </div>
+
+            <h2>10. Полезные ресурсы</h2>
+            <ul>
+                <li><strong>MDN Web Docs (developer.mozilla.org)</strong> — самая полная и авторитетная документация по веб-технологиям на русском языке.</li>
+                <li><strong>W3Schools (w3schools.com)</strong> — отличный ресурс с примерами и интерактивными упражнениями.</li>
+                <li><strong>HTML Validator (validator.w3.org)</strong> — официальный валидатор HTML для проверки правильности кода.</li>
+                <li><strong>Can I Use (caniuse.com)</strong> — проверка поддержки различных веб-технологий в разных браузерах.</li>
+                <li><strong>CodePen (codepen.io)</strong> — песочница для экспериментов с HTML, CSS и JS прямо в браузере.</li>
+            </ul>
+
+            <div class="note">
+                <strong>📝 Итог лекции:</strong><br>
+                • Мы изучили три ключевые технологии веб-разработки: HTML (структура), CSS (оформление), JavaScript (интерактивность).<br>
+                • Разобрали обязательную структуру HTML-документа и её элементы: <code>&lt;!DOCTYPE&gt;</code>, <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, <code>&lt;body&gt;</code>.<br>
+                • Познакомились с основными тегами: заголовки, параграфы, списки, ссылки, изображения.<br>
+                • Узнали об атрибутах тегов и их использовании.<br>
+                • Создали свою первую веб-страницу и научились пользоваться инструментами разработчика.
+            </div>
+
+            <h2>📝 Вопросы для самопроверки</h2>
+            <ol>
+                <li>Для чего нужен тег <code>&lt;!DOCTYPE html&gt;</code> и где он должен располагаться в документе?</li>
+                <li>В чём разница между тегами <code>&lt;strong&gt;</code> и <code>&lt;b&gt;</code>?</li>
+                <li>Как создать ссылку, которая открывается в новой вкладке?</li>
+                <li>Почему атрибут <code>alt</code> важен для изображений?</li>
+                <li>Что такое семантическая вёрстка и почему она важна?</li>
+                <li>Как открыть инструменты разработчика в браузере?</li>
+                <li>Какие теги используются для создания нумерованного и маркированного списков?</li>
+            </ol>
+        </div>
+        
+        <div class="footer">
+            <p>Курс лекций по дисциплине «Обучение пользователей информационных систем» | Веб-разработка на HTML, CSS и JavaScript</p>
+            <p style="margin-top: 8px;">Лекция 1: Основы веб-разработки и структура HTML-документа</p>
+        </div>
+    </div>
+
+    <script>
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            if (!particlesContainer) return;
+            
+            const particleCount = 60;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 6 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                const duration = Math.random() * 12 + 8;
+                particle.style.animationDuration = duration + 's';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                const colors = ['rgba(32,178,170,0.4)', 'rgba(72,201,176,0.3)', 'rgba(46,204,113,0.3)', 'rgba(93,173,226,0.3)'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.content h2, .content h3, .info-card, .code-block, .note, .warning-note').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+        
+        createParticles();
+        
+        document.querySelectorAll('.info-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    card.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест | Веб-разработка на HTML, CSS и JavaScript</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Inter', system-ui, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            color: #ffffff;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                #0a0f1a 0%, 
+                #0f1623 15%, 
+                #1a1f35 30%, 
+                #0d1b2a 45%, 
+                #1b263b 60%, 
+                #0f1623 80%, 
+                #0a0f1a 100%);
+            background-size: 300% 300%;
+            animation: gradientShift 12s ease infinite;
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 40%, rgba(52,152,219,0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 60%, rgba(155,89,182,0.12) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, rgba(46,204,113,0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+            animation: subtlePulse 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 50% 100%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 50% 0%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes subtlePulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(32,178,170,0.4);
+            border-radius: 50%;
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-20vh) translateX(50px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Новые анимационные эффекты */
+        @keyframes glowPulse {
+            0%, 100% {
+                box-shadow: 0 0 5px rgba(32,178,170,0.3), 0 0 10px rgba(32,178,170,0.2);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(32,178,170,0.6), 0 0 30px rgba(32,178,170,0.3);
+            }
+        }
+
+        @keyframes borderFlow {
+            0% {
+                border-image-source: linear-gradient(0deg, #20b2aa, #3498db, #9b59b6, #20b2aa);
+                border-image-slice: 1;
+            }
+            100% {
+                border-image-source: linear-gradient(360deg, #20b2aa, #3498db, #9b59b6, #20b2aa);
+                border-image-slice: 1;
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        @keyframes rotateGlow {
+            0% {
+                filter: hue-rotate(0deg);
+            }
+            100% {
+                filter: hue-rotate(360deg);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes pulseRing {
+            0% {
+                box-shadow: 0 0 0 0 rgba(32,178,170,0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(32,178,170,0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(32,178,170,0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(32,178,170,0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(32,178,170,0.5);
+            border-radius: 50px;
+            padding: 8px 25px;
+            font-size: 14px;
+            color: #20b2aa;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            animation: pulse 2s ease infinite, glowPulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 15px rgba(32,178,170,0.3);
+                border-color: rgba(32,178,170,0.5);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(32,178,170,0.6);
+                border-color: rgba(32,178,170,0.8);
+            }
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #ffffff, #20b2aa, #9b59b6, #2ecc71);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 15px;
+            animation: textGradient 5s ease infinite, rotateGlow 8s ease infinite;
+        }
+
+        @keyframes textGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.75);
+            font-size: 1.1em;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .back-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #20b2aa;
+            transition: width 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #20b2aa;
+            transform: translateX(-5px);
+        }
+
+        .back-link:hover::after {
+            width: 100%;
+        }
+
+        .progress-bar-container {
+            background: rgba(25, 30, 45, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 15px 25px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border: 1px solid rgba(255,255,255,0.08);
+            animation: slideInLeft 0.6s ease-out;
+        }
+
+        .progress-text {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #20b2aa, #3498db, #9b59b6);
+            background-size: 200% 100%;
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: shimmer 2s ease infinite;
+        }
+
+        .question-card {
+            background: rgba(25, 30, 45, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            animation: fadeInUp 0.5s ease-out;
+            opacity: 0;
+            transform: translateY(20px);
+            animation-fill-mode: forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(32,178,170,0.1), 
+                rgba(52,152,219,0.1), 
+                rgba(155,89,182,0.1), 
+                transparent);
+            transition: left 0.6s ease;
+            pointer-events: none;
+        }
+
+        .question-card:hover::before {
+            left: 100%;
+        }
+
+        .question-card:hover {
+            transform: translateY(-5px);
+            background: rgba(35, 40, 65, 0.8);
+            border-color: rgba(32,178,170,0.4);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3), 0 0 20px rgba(32,178,170,0.2);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-number {
+            font-size: 12px;
+            color: #20b2aa;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .question-card:hover .question-number {
+            letter-spacing: 3px;
+            color: #48c9b0;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .options {
+            margin-bottom: 20px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            background: rgba(15, 20, 35, 0.5);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(32,178,170,0.1), rgba(52,152,219,0.05));
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+
+        .option:hover::before {
+            width: 100%;
+        }
+
+        .option:hover {
+            background: rgba(32,178,170,0.1);
+            border-color: rgba(32,178,170,0.3);
+            transform: translateX(5px);
+        }
+
+        .option input {
+            margin-right: 15px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: #20b2aa;
+            transition: transform 0.2s;
+        }
+
+        .option input:hover {
+            transform: scale(1.1);
+        }
+
+        .option label {
+            cursor: pointer;
+            color: #ffffff;
+            flex: 1;
+            transition: color 0.3s;
+        }
+
+        .option:hover label {
+            color: #20b2aa;
+        }
+
+        .open-answer {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(15, 20, 35, 0.7);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .open-answer:focus {
+            outline: none;
+            border-color: #20b2aa;
+            background: rgba(15, 20, 35, 0.9);
+            box-shadow: 0 0 15px rgba(32,178,170,0.3);
+            transform: scale(1.01);
+        }
+
+        .open-answer::placeholder {
+            color: rgba(255,255,255,0.5);
+            transition: opacity 0.3s;
+        }
+
+        .open-answer:focus::placeholder {
+            opacity: 0.5;
+        }
+
+        .match-options {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .match-left, .match-right {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .match-item {
+            background: rgba(15, 20, 35, 0.7);
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .match-item:hover {
+            background: rgba(32,178,170,0.15);
+            transform: translateX(5px);
+        }
+
+        .match-item strong {
+            color: #ffffff;
+            transition: color 0.3s;
+        }
+
+        .match-item:hover strong {
+            color: #20b2aa;
+        }
+
+        .match-item select {
+            background: rgba(32,178,170,0.2);
+            border: 1px solid rgba(32,178,170,0.4);
+            color: #ffffff;
+            padding: 6px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .match-item select:hover {
+            background: rgba(32,178,170,0.4);
+            border-color: rgba(32,178,170,0.7);
+        }
+
+        .match-item select option {
+            background: #1a1f35;
+            color: #ffffff;
+        }
+
+        .sequence-items {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sequence-item {
+            background: rgba(15, 20, 35, 0.7);
+            padding: 12px 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: move;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .sequence-item:hover {
+            background: rgba(32,178,170,0.15);
+            transform: translateX(5px);
+        }
+
+        .sequence-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.98);
+        }
+
+        .drag-handle {
+            cursor: grab;
+            color: #20b2aa;
+            font-size: 18px;
+            transition: transform 0.2s;
+        }
+
+        .drag-handle:hover {
+            transform: scale(1.1);
+        }
+
+        .answer-btn {
+            background: rgba(32,178,170,0.2);
+            border: 1px solid rgba(32,178,170,0.5);
+            padding: 10px 20px;
+            border-radius: 30px;
+            color: #20b2aa;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            margin-top: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .answer-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(32,178,170,0.3), transparent);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            border-radius: 50%;
+        }
+
+        .answer-btn:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+
+        .answer-btn:hover {
+            background: rgba(32,178,170,0.4);
+            transform: translateY(-2px);
+            color: #ffffff;
+            box-shadow: 0 5px 15px rgba(32,178,170,0.3);
+            animation: pulseRing 0.5s ease-out;
+        }
+
+        .answer-btn:active {
+            transform: translateY(1px);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            display: none;
+            animation: slideInRight 0.4s ease-out;
+        }
+
+        .feedback.correct {
+            background: rgba(46,204,113,0.2);
+            border: 1px solid rgba(46,204,113,0.5);
+            color: #2ecc71;
+            display: block;
+            box-shadow: 0 0 15px rgba(46,204,113,0.2);
+        }
+
+        .feedback.incorrect {
+            background: rgba(231,76,60,0.2);
+            border: 1px solid rgba(231,76,60,0.5);
+            color: #e74c3c;
+            display: block;
+            box-shadow: 0 0 15px rgba(231,76,60,0.2);
+        }
+
+        .complete-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #20b2aa, #3498db, #9b59b6);
+            background-size: 200% 200%;
+            border: none;
+            border-radius: 50px;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .complete-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .complete-btn:hover::before {
+            left: 100%;
+        }
+
+        .complete-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(32,178,170,0.4);
+            background-position: 100% 100%;
+        }
+
+        .complete-btn:active {
+            transform: translateY(0);
+        }
+
+        .result-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(15px);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .result-content {
+            background: rgba(25, 30, 45, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid rgba(32,178,170,0.5);
+            animation: fadeInUp 0.5s ease-out, glowPulse 2s ease infinite;
+            transform: scale(0.9);
+            animation: modalPop 0.4s ease-out forwards;
+        }
+
+        @keyframes modalPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.7);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .result-content h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .score {
+            font-size: 3em;
+            background: linear-gradient(135deg, #20b2aa, #3498db, #9b59b6);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 20px 0;
+            animation: textGradient 2s ease infinite;
+        }
+
+        .result-content p {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .result-content button {
+            background: rgba(32,178,170,0.3);
+            border: 1px solid rgba(32,178,170,0.5);
+            padding: 12px 30px;
+            border-radius: 30px;
+            color: #ffffff;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+
+        .result-content button:hover {
+            background: rgba(32,178,170,0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(32,178,170,0.3);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.4);
+            font-size: 13px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px 15px; }
+            .header h1 { font-size: 1.8em; }
+            .question-card { padding: 20px; }
+            .match-options { flex-direction: column; gap: 15px; }
+        }
+
+        /* Эффект подсветки при наведении на карточку вопроса */
+        .question-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 24px;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+                        rgba(32,178,170,0.15) 0%, 
+                        transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .question-card:hover::after {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <a href="index.html" class="back-link">← Вернуться к курсу лекций</a>
+
+        <div class="header">
+            <div class="badge">📝 Итоговое тестирование</div>
+            <h1>Проверь свои знания</h1>
+        </div>
+
+        <div class="progress-bar-container">
+            <span class="progress-text">📊 Прогресс</span>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <span class="progress-text" id="answeredCount">0 / 30 ответов</span>
+        </div>
+
+        <div id="questionsContainer"></div>
+
+        <button class="complete-btn" id="completeBtn">✅ Завершить тест</button>
+
+        <div class="footer">
+            <p>Тест по курсу «Веб-разработка на HTML, CSS и JavaScript» | 30 вопросов</p>
+        </div>
+    </div>
+
+    <div id="resultModal" class="result-modal">
+        <div class="result-content">
+            <h2>🎉 Результат тестирования</h2>
+            <div class="score" id="scoreDisplay"></div>
+            <p id="messageDisplay"></p>
+            <button onclick="location.reload()">🔄 Пройти заново</button>
+            <button onclick="document.getElementById('resultModal').style.display='none'">✖ Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        const userAnswers = {};
+
+        const questions = [
+            { type: "single", text: "Какая технология отвечает за создание интерактивности на веб-странице: кнопки, формы, анимации?", options: ["HTML", "CSS", "JavaScript", "SQL"], correct: "JavaScript" },
+            { type: "open", text: "Какие три основные технологии используются для создания веб-страниц и какова роль каждой из них? (Дайте развернутый ответ)", correctKeywords: ["HTML", "CSS", "JavaScript", "структура", "оформление", "интерактивность"] },
+            { type: "single", text: "Какой тег является корневым для всей HTML-страницы?", options: ["&lt;head&gt;", "&lt;body&gt;", "&lt;html&gt;", "&lt;!DOCTYPE html&gt;"], correct: "&lt;html&gt;" },
+            { type: "fill", text: "Для создания гиперссылки используется тег &lt;a&gt; с обязательным атрибутом ______, который указывает адрес назначения ссылки.", correct: "href" },
+            { type: "match", text: "Установите соответствие между HTML-тегом и его назначением.", pairs: [{ left: "&lt;h1&gt;", right: "Заголовок самого высокого уровня" }, { left: "&lt;p&gt;", right: "Абзац текста" }, { left: "&lt;img&gt;", right: "Вставка изображения" }, { left: "&lt;ul&gt;", right: "Маркированный список" }] },
+            { type: "single", text: "Какой семантический тег предназначен для обозначения основного уникального содержимого страницы и должен использоваться только один раз на странице?", options: ["&lt;header&gt;", "&lt;main&gt;", "&lt;section&gt;", "&lt;aside&gt;"], correct: "&lt;main&gt;" },
+            { type: "open", text: "Чем отличаются теги &lt;strong&gt; и &lt;b&gt; с точки зрения смысловой нагрузки?", correctKeywords: ["strong", "смысловая важность", "b", "визуальное выделение"] },
+            { type: "single", text: "Какой тип пути к файлу лучше использовать для ссылок на другие страницы внутри одного сайта, чтобы избежать проблем при переносе сайта?", options: ["Абсолютный путь с протоколом", "Абсолютный путь без протокола", "Относительный путь", "Полный URL"], correct: "Относительный путь" },
+            { type: "multiple", text: "Какие атрибуты обязательно должны присутствовать у тега &lt;img&gt; для корректного отображения и доступности? (Выберите два)", options: ["src", "title", "alt", "width"], correct: ["src", "alt"] },
+            { type: "match", text: "Установите соответствие между семантическим тегом и его типичным содержимым.", pairs: [{ left: "&lt;header&gt;", right: "Логотип, навигация, заголовок вводной части" }, { left: "&lt;footer&gt;", right: "Контактная информация, копирайт" }, { left: "&lt;nav&gt;", right: "Меню с ссылками на другие страницы" }, { left: "&lt;aside&gt;", right: "Боковая панель с рекламой" }] },
+            { type: "single", text: "Какой способ подключения CSS считается самым профессиональным для многостраничных сайтов?", options: ["Инлайновые стили", "Встроенные стили (&lt;style&gt;)", "Внешний файл (&lt;link&gt;)", "Стили в атрибуте style у &lt;body&gt;"], correct: "Внешний файл (&lt;link&gt;)" },
+            { type: "open", text: "Что такое специфичность CSS-селекторов и как она рассчитывается?", correctKeywords: ["специфичность", "вес", "id", "класс", "тег", "100", "10", "1"] },
+            { type: "single", text: "Какое CSS-свойство отвечает за цвет текста?", options: ["background-color", "text-color", "color", "font-color"], correct: "color" },
+            { type: "sequence", text: "Расположите селекторы в порядке возрастания их специфичности: #header, p, .title, style=&quot;color: red;&quot;", items: ["p", ".title", "#header", "Инлайновый стиль"], correct: ["p", ".title", "#header", "Инлайновый стиль"] },
+            { type: "fill", text: "Для установки фонового изображения используется свойство __________________, а для управления его повторением — свойство background-repeat.", correct: "background-image" },
+            { type: "single", text: "Какой движок выполняет JavaScript-код в браузере Chrome?", options: ["SpiderMonkey", "Chakra", "V8", "Nitro"], correct: "V8" },
+            { type: "open", text: "В чем разница между объявлением переменных через let, const и устаревшим var? Когда какую использовать?", correctKeywords: ["let", "const", "var", "блочная", "изменяемая", "константа"] },
+            { type: "single", text: "Какой оператор сравнения следует использовать, чтобы избежать неожиданного приведения типов?", options: ["=", "==", "===", "!="], correct: "===" },
+            { type: "match", text: "Установите соответствие между типом данных в JavaScript и его примером.", pairs: [{ left: "number", right: "42" }, { left: "string", right: "&quot;Привет&quot;" }, { left: "boolean", right: "true" }, { left: "null", right: "null" }] },
+            { type: "fill", text: "Функция __________________ показывает модальное окно с вопросом и двумя кнопками «OK» и «Отмена», возвращая true или false.", correct: "confirm" },
+            { type: "single", text: "Какой цикл гарантированно выполнит своё тело хотя бы один раз, даже если условие изначально ложно?", options: ["for", "while", "do...while", "for...in"], correct: "do...while" },
+            { type: "open", text: "Напишите синтаксис стрелочной функции, которая принимает два числа и возвращает их произведение.", correctKeywords: ["=>", "const", "let", "return"] },
+            { type: "single", text: "Какой метод массива удаляет последний элемент и возвращает его?", options: ["pop()", "push()", "shift()", "unshift()"], correct: "pop()" },
+            { type: "sequence", text: "Расположите этапы работы цикла for (let i = 0; i < 3; i++) в правильном порядке.", items: ["Инициализация let i = 0", "Проверка условия i < 3", "Выполнение тела цикла", "Шаг i++"], correct: ["Инициализация let i = 0", "Проверка условия i < 3", "Выполнение тела цикла", "Шаг i++"] },
+            { type: "fill", text: "В объекте JavaScript для доступа к другим свойствам того же объекта внутри метода используется ключевое слово __________. А для удаления свойства из объекта применяется оператор __________.", correct: ["this", "delete"] },
+            { type: "single", text: "Какой метод поиска элементов в DOM является наиболее современным и универсальным?", options: ["getElementById()", "getElementsByClassName()", "querySelector()", "getElementsByTagName()"], correct: "querySelector()" },
+            { type: "open", text: "Что такое DOM-дерево? Как JavaScript взаимодействует с ним?", correctKeywords: ["DOM", "дерево", "узлы", "теги", "изменять"] },
+            { type: "single", text: "Какой метод используется для назначения обработчика события в современном JavaScript?", options: ["onclick = function()", "addEventListener()", "attachEvent()", "setHandler()"], correct: "addEventListener()" },
+            { type: "match", text: "Установите соответствие между типом события и его описанием.", pairs: [{ left: "click", right: "Нажатие и отпускание кнопки мыши" }, { left: "mouseenter", right: "Курсор входит в зону элемента" }, { left: "submit", right: "Отправка формы" }, { left: "keydown", right: "Нажатие клавиши на клавиатуре" }] },
+            { type: "fill", text: "Для публикации статического сайта на GitHub необходимо создать __________, загрузить файлы, а затем в настройках включить __________ Pages. Бесплатная платформа с drag-and-drop — __________.", correct: ["репозиторий", "GitHub", "Netlify"] }
+        ];
+
+        let answered = {};
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+            questions.forEach((q, idx) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-card';
+                qDiv.style.animationDelay = `${idx * 0.03}s`;
+                qDiv.innerHTML = `<div class="question-number">Вопрос ${idx + 1} / 30</div><div class="question-text">${q.text}</div>`;
+                
+                if (q.type === 'single') {
+                    const optionsDiv = document.createElement('div');
+                    optionsDiv.className = 'options';
+                    q.options.forEach(opt => {
+                        const optDiv = document.createElement('div');
+                        optDiv.className = 'option';
+                        optDiv.innerHTML = `<input type="radio" name="q${idx}" value="${opt}"><label>${opt}</label>`;
+                        optDiv.onclick = () => { optDiv.querySelector('input').click(); };
+                        optionsDiv.appendChild(optDiv);
+                    });
+                    qDiv.appendChild(optionsDiv);
+                } else if (q.type === 'multiple') {
+                    const optionsDiv = document.createElement('div');
+                    optionsDiv.className = 'options';
+                    q.options.forEach(opt => {
+                        const optDiv = document.createElement('div');
+                        optDiv.className = 'option';
+                        optDiv.innerHTML = `<input type="checkbox" name="q${idx}" value="${opt}"><label>${opt}</label>`;
+                        optionsDiv.appendChild(optDiv);
+                    });
+                    qDiv.appendChild(optionsDiv);
+                } else if (q.type === 'open' || q.type === 'fill') {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'open-answer';
+                    input.placeholder = 'Введите ваш ответ...';
+                    qDiv.appendChild(input);
+                } else if (q.type === 'match') {
+                    const matchDiv = document.createElement('div');
+                    matchDiv.className = 'match-options';
+                    const leftDiv = document.createElement('div');
+                    leftDiv.className = 'match-left';
+                    const rightDiv = document.createElement('div');
+                    rightDiv.className = 'match-right';
+                    q.pairs.forEach((pair, pIdx) => {
+                        const leftItem = document.createElement('div');
+                        leftItem.className = 'match-item';
+                        leftItem.innerHTML = `<strong>${pair.left}</strong>`;
+                        leftDiv.appendChild(leftItem);
+                        const rightItem = document.createElement('div');
+                        rightItem.className = 'match-item';
+                        const select = document.createElement('select');
+                        select.setAttribute('data-match-idx', pIdx);
+                        select.innerHTML = `<option value="">Выберите...</option>${q.pairs.map((_, optIdx) => `<option value="${optIdx}">${q.pairs[optIdx].right}</option>`).join('')}`;
+                        rightItem.appendChild(select);
+                        rightDiv.appendChild(rightItem);
+                    });
+                    matchDiv.appendChild(leftDiv);
+                    matchDiv.appendChild(rightDiv);
+                    qDiv.appendChild(matchDiv);
+                } else if (q.type === 'sequence') {
+                    const seqDiv = document.createElement('div');
+                    seqDiv.className = 'sequence-items';
+                    q.items.forEach((item, sIdx) => {
+                        const seqItem = document.createElement('div');
+                        seqItem.className = 'sequence-item';
+                        seqItem.setAttribute('data-order', sIdx);
+                        seqItem.innerHTML = `<span class="drag-handle">☰</span> <span>${item}</span>`;
+                        seqDiv.appendChild(seqItem);
+                    });
+                    qDiv.appendChild(seqDiv);
+                }
+                
+                const answerBtn = document.createElement('button');
+                answerBtn.className = 'answer-btn';
+                answerBtn.textContent = '📝 Ответить';
+                answerBtn.onclick = () => checkAnswer(idx);
+                qDiv.appendChild(answerBtn);
+                
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.className = 'feedback';
+                feedbackDiv.id = `feedback${idx}`;
+                qDiv.appendChild(feedbackDiv);
+                
+                container.appendChild(qDiv);
+            });
+        }
+
+        function checkAnswer(qIndex) {
+            const q = questions[qIndex];
+            let isCorrect = false;
+            let userAnswer = null;
+            
+            if (q.type === 'single') {
+                const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+                userAnswer = selected ? selected.value : '';
+                isCorrect = userAnswer === q.correct;
+            } else if (q.type === 'multiple') {
+                const selected = Array.from(document.querySelectorAll(`input[name="q${qIndex}"]:checked`)).map(cb => cb.value);
+                userAnswer = selected.sort().join(',');
+                const correctSorted = [...q.correct].sort().join(',');
+                isCorrect = userAnswer === correctSorted;
+            } else if (q.type === 'open' || q.type === 'fill') {
+                const input = document.querySelector(`#questionsContainer .question-card:nth-child(${qIndex+1}) .open-answer`);
+                userAnswer = input ? input.value.toLowerCase() : '';
+                if (Array.isArray(q.correct)) {
+                    isCorrect = q.correctKeywords.some(kw => userAnswer.includes(kw.toLowerCase()));
+                } else {
+                    isCorrect = userAnswer.includes(q.correct.toLowerCase());
+                }
+            } else if (q.type === 'match') {
+                const selects = document.querySelectorAll(`#questionsContainer .question-card:nth-child(${qIndex+1}) select`);
+                const matches = Array.from(selects).map(s => parseInt(s.value));
+                isCorrect = matches.every((m, i) => m === i);
+                userAnswer = matches.join(',');
+            } else if (q.type === 'sequence') {
+                const items = document.querySelectorAll(`#questionsContainer .question-card:nth-child(${qIndex+1}) .sequence-item span:last-child`);
+                const order = Array.from(items).map(item => item.textContent);
+                isCorrect = order.every((val, idx) => val === q.correct[idx]);
+                userAnswer = order.join(' -> ');
+            }
+            
+            answered[qIndex] = isCorrect;
+            userAnswers[qIndex] = userAnswer;
+            
+            const feedbackDiv = document.getElementById(`feedback${qIndex}`);
+            feedbackDiv.textContent = isCorrect ? '✓ Правильно!' : `✗ Неправильно. Правильный ответ: ${Array.isArray(q.correct) ? q.correct.join(', ') : q.correct}`;
+            feedbackDiv.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            
+            updateProgress();
+            
+            if (isCorrect) {
+                const btn = document.querySelector(`#questionsContainer .question-card:nth-child(${qIndex+1}) .answer-btn`);
+                btn.style.animation = 'pulseRing 0.5s ease-out';
+                setTimeout(() => { btn.style.animation = ''; }, 500);
+            }
+        }
+        
+        function updateProgress() {
+            const answeredCount = Object.keys(answered).length;
+            document.getElementById('answeredCount').textContent = `${answeredCount} / 30 ответов`;
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = `${(answeredCount / 30) * 100}%`;
+        }
+        
+        function completeTest() {
+            let correctCount = 0;
+            for (let i = 0; i < questions.length; i++) {
+                if (answered[i] === true) correctCount++;
+            }
+            const score = Math.round((correctCount / 30) * 100);
+            document.getElementById('scoreDisplay').innerHTML = `${correctCount} / 30<br>${score}%`;
+            let message = '';
+            if (score >= 85) message = 'Отлично! Вы мастер веб-разработки! 🎉';
+            else if (score >= 70) message = 'Хорошо! Но есть куда расти! 📚';
+            else if (score >= 50) message = 'Удовлетворительно. Рекомендуем повторить материал. 📖';
+            else message = 'Нужно больше практики! Пройдите курс заново. 💪';
+            document.getElementById('messageDisplay').textContent = message;
+            document.getElementById('resultModal').style.display = 'flex';
+        }
+        
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.width = (Math.random() * 6 + 2) + 'px';
+                p.style.height = p.style.width;
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDuration = (Math.random() * 12 + 8) + 's';
+                p.style.animationDelay = (Math.random() * 15) + 's';
+                container.appendChild(p);
+            }
+        }
+
+        // Добавляем обработчик для отслеживания движения мыши на карточках
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.question-card');
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+                    card.style.setProperty('--mouse-x', (e.clientX - rect.left) + 'px');
+                    card.style.setProperty('--mouse-y', (e.clientY - rect.top) + 'px');
+                }
+            });
+        });
+        
+        renderQuestions();
+        createParticles();
+        document.getElementById('completeBtn').addEventListener('click', completeTest);
+    </script>
+</body>
+</html>

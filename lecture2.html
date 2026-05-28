@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лекция 2 | Семантическая верстка и работа с контентом</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                #0a0f1a 0%, 
+                #0f1623 15%, 
+                #1a1f35 30%, 
+                #0d1b2a 45%, 
+                #1b263b 60%, 
+                #0f1623 80%, 
+                #0a0f1a 100%);
+            background-size: 300% 300%;
+            animation: gradientShift 12s ease infinite;
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 40%, rgba(32,178,170,0.12) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 60%, rgba(155,89,182,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, rgba(46,204,113,0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+            animation: subtlePulse 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 50% 100%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 50% 0%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes subtlePulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(32,178,170,0.4);
+            border-radius: 50%;
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-20vh) translateX(50px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            padding: 30px 20px;
+        }
+
+        .lecture-header {
+            background: rgba(25, 30, 45, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 40px;
+            margin-bottom: 35px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.08);
+            animation: fadeInDown 0.8s ease-out;
+            transition: all 0.3s;
+        }
+
+        .lecture-header:hover {
+            border-color: rgba(32,178,170,0.3);
+            box-shadow: 0 0 30px rgba(32,178,170,0.1);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .lecture-header h1 {
+            font-size: 2.8em;
+            background: linear-gradient(135deg, #ffffff, #20b2aa, #9b59b6);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 15px;
+            animation: textGradient 4s ease infinite;
+        }
+
+        @keyframes textGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .lecture-header .lecture-number {
+            color: #20b2aa;
+            font-size: 14px;
+            letter-spacing: 4px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: rgba(32,178,170,0.15);
+            border: 1px solid rgba(32,178,170,0.4);
+            border-radius: 40px;
+            padding: 12px 30px;
+            color: #20b2aa;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(32,178,170,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .back-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .back-btn:hover {
+            background: #20b2aa;
+            color: white;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(32,178,170,0.3);
+            border-color: transparent;
+        }
+
+        .back-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .content {
+            background: rgba(25, 30, 45, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 50px;
+            border: 1px solid rgba(255,255,255,0.06);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            transition: all 0.3s;
+            color: #ffffff;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content:hover {
+            border-color: rgba(32,178,170,0.15);
+        }
+
+        .content h2 {
+            color: #20b2aa;
+            margin: 35px 0 20px 0;
+            font-size: 1.9em;
+            border-left: 4px solid #20b2aa;
+            padding-left: 18px;
+            transition: transform 0.3s;
+        }
+
+        .content h2:hover {
+            transform: translateX(5px);
+        }
+
+        .content h3 {
+            color: #9b59b6;
+            margin: 25px 0 12px 0;
+            font-size: 1.5em;
+        }
+
+        .content h4 {
+            color: #f39c12;
+            margin: 20px 0 10px 0;
+            font-size: 1.2em;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            text-align: justify;
+            line-height: 1.7;
+            color: #ffffff;
+        }
+
+        .content ul, .content ol {
+            margin: 15px 0 15px 30px;
+            color: #ffffff;
+        }
+
+        .content li {
+            margin-bottom: 10px;
+            transition: transform 0.2s;
+            color: #ffffff;
+        }
+
+        .content li:hover {
+            transform: translateX(5px);
+            color: #20b2aa;
+        }
+
+        .code-block {
+            background: rgba(10, 14, 25, 0.85);
+            border-left: 4px solid #20b2aa;
+            padding: 20px;
+            border-radius: 14px;
+            margin: 20px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            line-height: 1.6;
+            transition: all 0.3s;
+            position: relative;
+            color: #ffffff;
+        }
+
+        .code-block:hover {
+            transform: scale(1.01);
+            border-left-color: #48c9b0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .code-block code {
+            color: #48c9b0;
+        }
+
+        .note {
+            background: rgba(32,178,170,0.12);
+            border-left: 4px solid #20b2aa;
+            padding: 20px;
+            border-radius: 14px;
+            margin: 25px 0;
+            transition: all 0.3s;
+            color: #ffffff;
+        }
+
+        .note:hover {
+            background: rgba(32,178,170,0.18);
+            transform: translateX(5px);
+        }
+
+        .warning-note {
+            background: rgba(243,156,18,0.12);
+            border-left: 4px solid #f39c12;
+            padding: 20px;
+            border-radius: 14px;
+            margin: 25px 0;
+            transition: all 0.3s;
+            color: #ffffff;
+        }
+
+        .warning-note:hover {
+            background: rgba(243,156,18,0.18);
+            transform: translateX(5px);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .info-card {
+            background: rgba(255,255,255,0.04);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            cursor: pointer;
+            color: #ffffff;
+        }
+
+        .info-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(32,178,170,0.3);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .info-card:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .info-card h4 {
+            color: #20b2aa;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .info-card p {
+            font-size: 14px;
+            margin-bottom: 0;
+            color: #ffffff;
+        }
+
+        .info-card code {
+            color: #48c9b0;
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(10, 14, 25, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+            color: #ffffff !important;
+        }
+        th { 
+            background: rgba(32,178,170,0.25);
+            color: #ffffff !important;
+            font-weight: 600;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 20, 35, 0.8);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #20b2aa;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #48c9b0;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px 15px; }
+            .lecture-header { padding: 25px; }
+            .lecture-header h1 { font-size: 1.8em; }
+            .content { padding: 25px; }
+            .content h2 { font-size: 1.5em; }
+            .info-grid { grid-template-columns: 1fr; }
+            th, td { padding: 8px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="lecture-header">
+            <div class="lecture-number">Лекция №2</div>
+            <h1>🏗️ Семантическая верстка и работа с контентом</h1>
+            <a href="index.html" class="back-btn">← На главную</a>
+        </div>
+        
+        <div class="content">
+            <h2>📋 План лекции</h2>
+            <ul>
+                <li>Семантические теги HTML: &lt;header&gt;, &lt;main&gt;, &lt;footer&gt;, &lt;section&gt;, &lt;article&gt;, &lt;aside&gt;, &lt;nav&gt;</li>
+                <li>Форматирование текста: жирный, курсив, цитаты, даты, адреса</li>
+                <li>Работа со ссылками: абсолютные и относительные пути</li>
+                <li>Вставка изображений: тег &lt;img&gt;, атрибуты src, alt, title, width, height</li>
+                <li>Таблицы: &lt;table&gt;, &lt;tr&gt;, &lt;td&gt;, &lt;th&gt;, объединение ячеек</li>
+                <li>Сравнение семантической и несемантической верстки</li>
+            </ul>
+
+            <h2>1. Что такое семантическая верстка?</h2>
+            <p><strong>Семантическая верстка</strong> — это подход к созданию HTML-кода, при котором теги выбираются не по внешнему виду, а по их <strong>смысловому значению</strong>. Вместо универсального контейнера &lt;div&gt; используются специализированные теги, которые точно описывают тип содержимого.</p>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>✅ Преимущества семантической верстки</h4>
+                    <p>• Улучшает SEO — поисковые системы лучше понимают структуру страницы<br>• Повышает доступность (a11y) — скринридеры правильно интерпретируют контент<br>• Облегчает поддержку кода — разработчики быстрее ориентируются в структуре<br>• Улучшает кросс-браузерную совместимость</p>
+                </div>
+                <div class="info-card">
+                    <h4>❌ Несемантическая верстка</h4>
+                    <p>• Использование &lt;div&gt; и &lt;span&gt; для всего подряд<br>• Поисковые системы хуже индексируют страницу<br>• Скринридеры не могут правильно озвучить структуру<br>• Код становится «кашей» из вложенных контейнеров</p>
+                </div>
+            </div>
+
+            <h2>2. Основные семантические теги</h2>
+            
+            <h3>2.1. Структурные семантические теги</h3>
+            
+            <table>
+                <thead>
+                    <tr><th>Тег</th><th>Описание</th><th>Пример использования</th><th>Особенности</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>&lt;header&gt;</code></td><td>Шапка сайта или раздела</td><td>Логотип, название сайта, основные контакты, навигация</td><td>Может повторяться на странице (в разных разделах)</td></tr>
+                    <tr><td><code>&lt;main&gt;</code></td><td>Основное уникальное содержимое страницы</td><td>Главный контент статьи, каталог товаров, форма обратной связи</td><td>Должен быть только один на странице</td></tr>
+                    <tr><td><code>&lt;footer&gt;</code></td><td>Подвал сайта или раздела</td><td>Копирайт, контакты, ссылки на политику, карта сайта</td><td>Обычно содержит контактную информацию</td></tr>
+                    <tr><td><code>&lt;nav&gt;</code></td><td>Блок навигационных ссылок</td><td>Главное меню, хлебные крошки, оглавление страницы</td><td>Предназначен для основных навигационных блоков</td></tr>
+                    <tr><td><code>&lt;article&gt;</code></td><td>Независимая, самодостаточная часть контента</td><td>Новость, пост в блоге, комментарий, карточка товара</td><td>Может быть скопирован и распространён отдельно</td></tr>
+                    <tr><td><code>&lt;section&gt;</code></td><td>Группирует связанный по смыслу контент</td><td>Раздел преимуществ, блок с услугами, группа новостей</td><td>Должен иметь заголовок внутри</td></tr>
+                    <tr><td><code>&lt;aside&gt;</code></td><td>Контент, связанный с основным, но не являющийся его частью</td><td>Боковая панель, блок с рекламой, ссылки на похожие статьи</td><td>Часто используется для дополнительной информации</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+<code>
+&lt;!-- Пример семантической структуры страницы --&gt;
+&lt;body&gt;
+    &lt;header&gt;
+        &lt;h1&gt;Мой блог&lt;/h1&gt;
+        &lt;nav&gt;
+            &lt;a href="/"&gt;Главная&lt;/a&gt;
+            &lt;a href="/about"&gt;О нас&lt;/a&gt;
+            &lt;a href="/contacts"&gt;Контакты&lt;/a&gt;
+        &lt;/nav&gt;
+    &lt;/header&gt;
+    
+    &lt;main&gt;
+        &lt;article&gt;
+            &lt;h2&gt;Название статьи&lt;/h2&gt;
+            &lt;p&gt;Содержание статьи...&lt;/p&gt;
+        &lt;/article&gt;
+        
+        &lt;section&gt;
+            &lt;h2&gt;Похожие статьи&lt;/h2&gt;
+            &lt;p&gt;Список похожих материалов...&lt;/p&gt;
+        &lt;/section&gt;
+    &lt;/main&gt;
+    
+    &lt;aside&gt;
+        &lt;h3&gt;Реклама&lt;/h3&gt;
+        &lt;p&gt;Рекламный блок...&lt;/p&gt;
+    &lt;/aside&gt;
+    
+    &lt;footer&gt;
+        &lt;p&gt;© 2024 Мой блог. Все права защищены.&lt;/p&gt;
+    &lt;/footer&gt;
+&lt;/body&gt;
+</code>
+            </div>
+
+            <div class="note">
+                <strong>💡 Важно:</strong> Теги <code>&lt;section&gt;</code> и <code>&lt;article&gt;</code> всегда должны иметь заголовок (обычно <code>&lt;h1&gt;</code>—<code>&lt;h6&gt;</code>) внутри себя, чтобы обозначить тему раздела.
+            </div>
+
+            <h2>3. Форматирование текста</h2>
+            <p>Для придания тексту смыслового и визуального выделения используются специальные теги:</p>
+            
+            <table>
+                <thead>
+                    <tr><th>Тег</th><th>Значение</th><th>Визуальный эффект</th><th>Пример использования</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>&lt;strong&gt;</code></td><td>Смысловая важность, серьезное предупреждение</td><td>Жирный</td><td><code>&lt;strong&gt;Важно! Не забудьте сохранить&lt;/strong&gt;</code></td></tr>
+                    <tr><td><code>&lt;b&gt;</code></td><td>Визуальное выделение без смысловой нагрузки</td><td>Жирный</td><td><code>&lt;b&gt;Ключевое слово&lt;/b&gt; в тексте</code></td></tr>
+                    <tr><td><code>&lt;em&gt;</code></td><td>Смысловое ударение, эмфазис</td><td>Курсив</td><td><code>Это &lt;em&gt;очень&lt;/em&gt; важно</code></td></tr>
+                    <tr><td><code>&lt;i&gt;</code></td><td>Визуальный курсив без смысловой нагрузки</td><td>Курсив</td><td><code>Иностранное слово &lt;i&gt;c'est la vie&lt;/i&gt;</code></td></tr>
+                    <tr><td><code>&lt;mark&gt;</code></td><td>Выделение цветом (как маркером)</td><td>Желтый фон</td><td><code>&lt;mark&gt;Важный фрагмент&lt;/mark&gt;</code></td></tr>
+                    <tr><td><code>&lt;small&gt;</code></td><td>Мелкий текст (юридические оговорки, примечания)</td><td>Меньший размер шрифта</td><td><code>&lt;small&gt;*Акция действует до 31.12&lt;/small&gt;</code></td></tr>
+                    <tr><td><code>&lt;del&gt;</code></td><td>Удаленный текст</td><td>Зачёркнутый</td><td><code>&lt;del&gt;старая цена 1000₽&lt;/del&gt;</code></td></tr>
+                    <tr><td><code>&lt;ins&gt;</code></td><td>Вставленный текст</td><td>Подчёркнутый</td><td><code>&lt;ins&gt;новая цена 800₽&lt;/ins&gt;</code></td></tr>
+                    <tr><td><code>&lt;sub&gt;</code></td><td>Подстрочный текст</td><td>Ниже строки, меньший размер</td><td><code>H&lt;sub&gt;2&lt;/sub&gt;O</code> (вода)</td></tr>
+                    <tr><td><code>&lt;sup&gt;</code></td><td>Надстрочный текст</td><td>Выше строки, меньший размер</td><td><code>E=mc&lt;sup&gt;2&lt;/sup&gt;</code> (формула Эйнштейна)</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Цитаты, адреса и даты</h3>
+            <table>
+                <thead>
+                    <tr><th>Тег</th><th>Описание</th><th>Пример использования</th><th>Особенности</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>&lt;blockquote&gt;</code></td><td>Длинная многострочная цитата</td><td><code>&lt;blockquote cite="https://source.com"&gt;...&lt;/blockquote&gt;</code></td><td>Отображается с отступами, атрибут cite указывает источник</td></tr>
+                    <tr><td><code>&lt;q&gt;</code></td><td>Короткая цитата внутри строки</td><td><code>&lt;q&gt;Знание — сила&lt;/q&gt;</code></td><td>Браузер автоматически добавляет кавычки</td></tr>
+                    <tr><td><code>&lt;cite&gt;</code></td><td>Название источника цитаты или произведения</td><td><code>&lt;cite&gt;Война и мир&lt;/cite&gt;</code></td><td>Обычно отображается курсивом</td></tr>
+                    <tr><td><code>&lt;address&gt;</code></td><td>Контактная информация</td><td><code>&lt;address&gt;email@example.com&lt;/address&gt;</code></td><td>Обычно отображается курсивом</td></tr>
+                    <tr><td><code>&lt;time&gt;</code></td><td>Дата и время в машиночитаемом формате</td><td><code>&lt;time datetime="2024-12-25"&gt;25 декабря&lt;/time&gt;</code></td><td>Атрибут datetime обязателен</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+<code>
+&lt;blockquote cite="https://example.com/source"&gt;
+    &lt;p&gt;Длинная цитата, которая занимает несколько строк...&lt;/p&gt;
+    &lt;cite&gt;— Автор цитаты, "Название книги"&lt;/cite&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Как сказал философ: &lt;q&gt;Знание — сила&lt;/q&gt;.&lt;/p&gt;
+
+&lt;address&gt;
+    Написать нам: &lt;a href="mailto:info@example.com"&gt;info@example.com&lt;/a&gt;&lt;br&gt;
+    Позвонить: &lt;a href="tel:+71234567890"&gt;+7 (123) 456-78-90&lt;/a&gt;
+&lt;/address&gt;
+
+&lt;p&gt;Событие состоится &lt;time datetime="2024-12-25"&gt;25 декабря 2024&lt;/time&gt;.&lt;/p&gt;
+</code>
+            </div>
+
+            <h2>4. Работа со ссылками</h2>
+            <p>Гиперссылки создаются с помощью тега <code>&lt;a&gt;</code> (anchor — якорь). Основной атрибут — <code>href</code> (hypertext reference), указывающий адрес перехода.</p>
+
+            <h3>Типы путей для ссылок</h3>
+            
+            <table>
+                <thead>
+                    <tr><th>Тип пути</th><th>Синтаксис</th><th>Пример</th><th>Когда использовать</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Абсолютный (полный)</strong></td><td>протокол://домен/путь</td><td><code>https://example.com/page.html</code></td><td>Ссылки на внешние сайты</td></tr>
+                    <tr><td><strong>Относительный (текущая папка)</strong></td><td>имя_файла.html или <code>./</code></td><td><code>page.html</code> или <code>./page.html</code></td><td>Внутренние ссылки в пределах одной папки</td></tr>
+                    <tr><td><strong>Относительный (уровень выше)</strong></td><td><code>../</code></td><td><code>../page.html</code></td><td>Ссылки из подпапок в родительские папки</td></tr>
+                    <tr><td><strong>Относительный (корневой)</strong></td><td><code>/</code></td><td><code>/page.html</code></td><td>Универсальные ссылки от корня сайта</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Атрибуты тега &lt;a&gt;</h3>
+            <table>
+                <thead>
+                    <tr><th>Атрибут</th><th>Описание</th><th>Пример</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>href</code></td><td>Адрес ссылки (обязательный атрибут)</td><td><code>href="https://example.com"</code></td></tr>
+                    <tr><td><code>target="_blank"</code></td><td>Открывает ссылку в новой вкладке</td><td><code>target="_blank"</code></td></tr>
+                    <tr><td><code>rel="noopener"</code></td><td>Защита при открытии в новой вкладке (безопасность)</td><td><code>rel="noopener noreferrer"</code></td></tr>
+                    <tr><td><code>title</code></td><td>Всплывающая подсказка при наведении</td><td><code>title="Подробнее о компании"</code></td></tr>
+                    <tr><td><code>download</code></td><td>Предлагает скачать файл вместо перехода</td><td><code>download="filename.pdf"</code></td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+<code>
+&lt;!-- Внешняя ссылка с защитой --&gt;
+&lt;a href="https://www.google.com" target="_blank" rel="noopener noreferrer"&gt;
+    Перейти на Google
+&lt;/a&gt;
+
+&lt;!-- Внутренние ссылки --&gt;
+&lt;a href="about.html"&gt;О нас (текущая папка)&lt;/a&gt;
+&lt;a href="../index.html"&gt;На главную (на уровень выше)&lt;/a&gt;
+&lt;a href="/catalog/page.html"&gt;Каталог (от корня сайта)&lt;/a&gt;
+
+&lt;!-- Специальные ссылки --&gt;
+&lt;a href="mailto:info@example.com"&gt;Написать письмо&lt;/a&gt;
+&lt;a href="tel:+71234567890"&gt;Позвонить&lt;/a&gt;
+&lt;a href="#section-1"&gt;Перейти к разделу 1 (якорь на этой же странице)&lt;/a&gt;
+&lt;a href="document.pdf" download&gt;Скачать PDF&lt;/a&gt;
+</code>
+            </div>
+
+            <div class="warning-note">
+                <strong>🔒 Рекомендация по безопасности:</strong> При использовании <code>target="_blank"</code> всегда добавляйте <code>rel="noopener noreferrer"</code>. Это защищает вашу страницу от потенциальных атак через открытую ссылку.
+            </div>
+
+            <h2>5. Вставка изображений</h2>
+            <p>Тег <code>&lt;img&gt;</code> является <strong>самозакрывающимся</strong> (не требует закрывающего тега) и используется для встраивания изображений на страницу.</p>
+
+            <h3>Атрибуты тега &lt;img&gt;</h3>
+            <table>
+                <thead>
+                    <tr><th>Атрибут</th><th>Обязательный</th><th>Описание</th><th>Пример</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>src</code></td><td>✅ Да</td><td>Путь к файлу изображения (абсолютный или относительный)</td><td><code>src="images/photo.jpg"</code></td></tr>
+                    <tr><td><code>alt</code></td><td>✅ Да</td><td>Альтернативный текст (для SEO и доступности)</td><td><code>alt="Описание изображения"</code></td></tr>
+                    <tr><td><code>title</code></td><td>❌ Нет</td><td>Всплывающая подсказка при наведении мыши</td><td><code>title="Подсказка"</code></td></tr>
+                    <tr><td><code>width / height</code></td><td>❌ Нет</td><td>Размеры изображения в пикселях</td><td><code>width="300" height="200"</code></td></tr>
+                    <tr><td><code>loading</code></td><td>❌ Нет</td><td>Ленивая загрузка (lazy/eager)</td><td><code>loading="lazy"</code></td></tr>
+                </tbody>
+            </table>
+
+            <div class="warning-note">
+                <strong>⚠️ Атрибут alt — обязательный!</strong> Он отображается, если изображение не загрузилось, используется поисковыми системами для индексации и важен для людей с нарушениями зрения (скринридеры зачитывают alt-текст). Для декоративных изображений используйте <code>alt=""</code>.
+            </div>
+
+            <div class="code-block">
+<code>
+&lt;!-- Базовое изображение с обязательными атрибутами --&gt;
+&lt;img src="images/logo.png" alt="Логотип компании"&gt;
+
+&lt;!-- Изображение с указанием размеров --&gt;
+&lt;img src="images/photo.jpg" alt="Пейзаж" width="600" height="400"&gt;
+
+&lt;!-- Изображение с подсказкой и ленивой загрузкой --&gt;
+&lt;img src="images/banner.jpg" alt="Рекламный баннер" title="Нажмите для перехода" loading="lazy"&gt;
+
+&lt;!-- Изображение-ссылка --&gt;
+&lt;a href="https://example.com"&gt;
+    &lt;img src="images/button.jpg" alt="Кнопка перехода"&gt;
+&lt;/a&gt;
+</code>
+            </div>
+
+            <h2>6. Таблицы в HTML</h2>
+            <p>Таблицы используются для представления структурированных данных в виде строк и столбцов.</p>
+
+            <h3>Основные теги таблиц</h3>
+            <table>
+                <thead>
+                    <tr><th>Тег</th><th>Описание</th><th>Назначение</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>&lt;table&gt;</code></td><td>Контейнер для всей таблицы</td><td>Обрамляет все остальные теги таблицы</td></tr>
+                    <tr><td><code>&lt;thead&gt;</code></td><td>Группировка заголовочных строк</td><td>Содержит строки с заголовками (шапка таблицы)</td></tr>
+                    <tr><td><code>&lt;tbody&gt;</code></td><td>Основное тело таблицы</td><td>Содержит основные данные таблицы</td></tr>
+                    <tr><td><code>&lt;tfoot&gt;</code></td><td>Подвал таблицы</td><td>Содержит итоги, суммы, выводы</td></tr>
+                    <tr><td><code>&lt;tr&gt;</code></td><td>Строка таблицы (table row)</td><td>Группирует ячейки в одну строку</td></tr>
+                    <tr><td><code>&lt;th&gt;</code></td><td>Ячейка-заголовок (table header)</td><td>Отображается жирным шрифтом по центру</td></tr>
+                    <tr><td><code>&lt;td&gt;</code></td><td>Обычная ячейка с данными (table data)</td><td>Содержит основные данные таблицы</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Объединение ячеек</h3>
+            <table>
+                <thead>
+                    <tr><th>Атрибут</th><th>Направление</th><th>Описание</th><th>Пример</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>colspan</code></td><td>Горизонтальное (по столбцам)</td><td>Объединяет ячейки в одной строке</td><td><code>&lt;td colspan="2"&gt;</code> — ячейка занимает 2 столбца</td></tr>
+                    <tr><td><code>rowspan</code></td><td>Вертикальное (по строкам)</td><td>Объединяет ячейки в одном столбце</td><td><code>&lt;td rowspan="3"&gt;</code> — ячейка занимает 3 строки</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+<code>
+&lt;!-- Простая таблица --&gt;
+&lt;table border="1"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;Имя&lt;/th&gt;
+            &lt;th&gt;Возраст&lt;/th&gt;
+            &lt;th&gt;Город&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Анна&lt;/td&gt;
+            &lt;td&gt;25&lt;/td&gt;
+            &lt;td&gt;Москва&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Иван&lt;/td&gt;
+            &lt;td&gt;30&lt;/td&gt;
+            &lt;td&gt;Санкт-Петербург&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;!-- Таблица с объединением ячеек --&gt;
+&lt;table border="1"&gt;
+    &lt;tr&gt;
+        &lt;th colspan="3"&gt;Расписание занятий&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;th&gt;День&lt;/th&gt;
+        &lt;th&gt;Время&lt;/th&gt;
+        &lt;th&gt;Предмет&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td rowspan="2"&gt;Понедельник&lt;/td&gt;
+        &lt;td&gt;10:00-11:30&lt;/td&gt;
+        &lt;td&gt;Математика&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;12:00-13:30&lt;/td&gt;
+        &lt;td&gt;Физика&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+</code>
+            </div>
+
+            <h2>7. Сравнение семантической и несемантической верстки</h2>
+            
+            <table>
+                <thead>
+                    <tr><th>Аспект</th><th>Семантическая верстка</th><th>Несемантическая верстка</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Используемые теги</strong></td><td><code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;footer&gt;</code></td><td><code>&lt;div&gt;</code>, <code>&lt;span&gt;</code> (без смысловой нагрузки)</td></tr>
+                    <tr><td><strong>Читаемость кода</strong></td><td>Высокая — сразу понятно, где какой блок</td><td>Низкая — нужно анализировать классы и структуру</td></tr>
+                    <tr><td><strong>SEO-оптимизация</strong></td><td>Поисковые системы лучше понимают структуру и важность контента</td><td>Поисковые системы хуже индексируют страницу</td></tr>
+                    <tr><td><strong>Доступность (a11y)</strong></td><td>Скринридеры правильно озвучивают структуру</td><td>Скринридеры не понимают назначение блоков</td></tr>
+                    <tr><td><strong>Поддержка кода</strong></td><td>Разработчики быстро ориентируются в структуре</td><td>Код сложнее поддерживать и модифицировать</td></tr>
+                    <tr><td><strong>Будущее технологии</strong></td><td>Современный стандарт, активно развивается</td><td>Устаревший подход, не рекомендуется</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+<code>
+&lt;!-- ❌ НЕСЕМАНТИЧЕСКАЯ ВЕРСТКА (плохо) --&gt;
+&lt;div class="header"&gt;
+    &lt;div class="logo"&gt;Логотип&lt;/div&gt;
+    &lt;div class="menu"&gt;
+        &lt;div class="menu-item"&gt;Главная&lt;/div&gt;
+        &lt;div class="menu-item"&gt;О нас&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="content"&gt;
+    &lt;div class="post"&gt;Статья...&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="footer"&gt;Подвал&lt;/div&gt;
+
+&lt;!-- ✅ СЕМАНТИЧЕСКАЯ ВЕРСТКА (хорошо) --&gt;
+&lt;header&gt;
+    &lt;div class="logo"&gt;Логотип&lt;/div&gt;
+    &lt;nav&gt;
+        &lt;a href="/"&gt;Главная&lt;/a&gt;
+        &lt;a href="/about"&gt;О нас&lt;/a&gt;
+    &lt;/nav&gt;
+&lt;/header&gt;
+&lt;main&gt;
+    &lt;article&gt;Статья...&lt;/article&gt;
+&lt;/main&gt;
+&lt;footer&gt;Подвал&lt;/footer&gt;
+</code>
+            </div>
+
+            <div class="note">
+                <strong>📝 Итог лекции:</strong><br>
+                • Семантическая верстка использует теги по их смысловому назначению, а не по внешнему виду.<br>
+                • Основные семантические теги: <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;aside&gt;</code>.<br>
+                • Для форматирования текста используются <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;blockquote&gt;</code>, <code>&lt;time&gt;</code> и другие.<br>
+                • Ссылки создаются тегом <code>&lt;a&gt;</code> с атрибутом <code>href</code>.<br>
+                • Изображения вставляются через <code>&lt;img&gt;</code> с обязательными атрибутами <code>src</code> и <code>alt</code>.<br>
+                • Таблицы строятся с помощью <code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code>, <code>&lt;td&gt;</code>, <code>&lt;th&gt;</code>.<br>
+                • Семантическая верстка улучшает SEO, доступность и облегчает поддержку кода.
+            </div>
+
+            <h2>📝 Вопросы для самопроверки</h2>
+            <ol>
+                <li>Чем отличается семантическая верстка от несемантической? Приведите примеры.</li>
+                <li>Для чего нужен тег <code>&lt;main&gt;</code> и сколько раз он может использоваться на странице?</li>
+                <li>В чем разница между тегами <code>&lt;article&gt;</code> и <code>&lt;section&gt;</code>? В каких случаях какой тег следует использовать?</li>
+                <li>Когда следует использовать тег <code>&lt;aside&gt;</code>? Приведите пример контента, который туда помещают.</li>
+                <li>Какие теги используются для форматирования текста? В чем разница между <code>&lt;strong&gt;</code> и <code>&lt;b&gt;</code>?</li>
+                <li>Чем отличается абсолютный путь от относительного? Приведите примеры каждого типа.</li>
+                <li>Зачем нужен атрибут <code>alt</code> у изображений? Что произойдет, если его не указать?</li>
+                <li>Как создать ссылку, открывающуюся в новой вкладке, и какие атрибуты безопасности нужно добавить?</li>
+                <li>Как объединить ячейки в таблице по горизонтали? По вертикали? Напишите синтаксис.</li>
+                <li>Какие теги образуют «скелет» семантической веб-страницы? Перечислите их.</li>
+                <li>Какие преимущества дает семантическая верстка для SEO и доступности?</li>
+            </ol>
+        </div>
+        
+        <div class="footer">
+            <p>Курс лекций по дисциплине «Обучение пользователей информационных систем» | Веб-разработка на HTML, CSS и JavaScript</p>
+            <p style="margin-top: 8px;">Лекция 2: Семантическая верстка и работа с контентом</p>
+        </div>
+    </div>
+
+    <script>
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            if (!particlesContainer) return;
+            
+            const particleCount = 60;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 6 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                const duration = Math.random() * 12 + 8;
+                particle.style.animationDuration = duration + 's';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                const colors = ['rgba(32,178,170,0.4)', 'rgba(72,201,176,0.3)', 'rgba(46,204,113,0.3)', 'rgba(93,173,226,0.3)'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.content h2, .content h3, .info-card, .code-block, .note, .warning-note, table').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+        
+        createParticles();
+        
+        document.querySelectorAll('.info-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    card.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>
